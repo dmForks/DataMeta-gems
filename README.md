@@ -1,2 +1,3 @@
-# DataMeta-gems
-Ruby Gems for the DataMeta, including the core.
+# DataMeta Gems
+
+Ruby Gems root for [DataMeta](https://github.com/eBayDataMeta)

@@ -30,10 +30,10 @@ build-iPhoneSimulator/
 # vendor/Pods/
 
 ## Documentation cache and generated files:
-/.yardoc/
-/_yardoc/
-/doc/
-/rdoc/
+.yardoc/
+_yardoc/
+doc/
+rdoc/
 
 ## Environment normalization:
 /.bundle/
@@ -48,3 +48,11 @@ build-iPhoneSimulator/
 
 # unless supporting rvm < 1.11.0 or doing something fancy, ignore this:
 .rvmrc
+
+# VIM
+
+*.swp
+.swp
+
+# Applications
+*.log
