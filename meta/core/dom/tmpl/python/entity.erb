@@ -1,0 +1,50 @@
+# package <%=@pyPackage%>
+
+
+# ****************** <%=pyClassName%> ***************
+class <%=pyClassName%>(Verifiable):
+    VERSION = SemVer("<%=srcE.ver.full%>")
+    <%=rxRoster.to_patterns%>
+
+    def __init__(self):
+<%	srcE.fields.keys.each { |fieldName|%>
+        self.__<%=fieldName%> = None
+<%}
+%>
+    def getVersion(self):
+        return self.__class__.VERSION
+
+<%	srcE.fields.keys.each { |fieldName|
+    field = srcE.fields[fieldName]%>
+    def <%=getterName(field)%>(self):
+        return self.__<%=fieldName%>
+
+    def <%=setterName(field)%>(self, val):<%    if field.isRequired%>
+        if val is None: raise AttributeError("The \"None\" argument passed to the setter of the required field \"<%=fieldName%>\" on the class <%=srcE.name%>.")<%    end%>
+        self.__<%=fieldName%> = val
+<%}
+%>
+
+    def __eq__(self, other):
+        if not isinstance(other, type(self)): raise AttributeError("Attempt to compare an instance of %s to an instance of %s" % (self.__class__, other.__class__))
+        return (<%=eqHashFields.map{|f| "self.__#{f}"}.join(', ')%>) == (<%=eqHashFields.map{|f| "other._#{pyClassName}__#{f}"}.join(', ')%>)
+<%# the reference to the self.__x vars as instance._ClassName__x has been tested with classes in packages, it works %>
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
+    def __hash__(self):
+        return (<%=eqHashFields.map{|f| "hash(self.__#{f})"}.join(' ^ ')%> ^ hash((<%=eqHashFields.map{|f| "self.__#{f}"}.join(', ')%>)))
+
+    def verify(self):<%unless verCalls.empty?%>
+        missingFields = []
+        <%=verCalls%>
+        if(len(missingFields) != 0): raise AttributeError("<%=baseName%>: required fields not set: %s" % ", ".join(missingFields))
+<%end%>
+        <%=rxRoster.to_verifications(baseName)%>
+<%=fieldVerifications%>
+
+        return
+
+# -------------- END of <%=pyClassName%> --------------
+

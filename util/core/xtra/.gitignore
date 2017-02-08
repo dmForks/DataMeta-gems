@@ -1,0 +1,6 @@
+*.gem
+doc
+*log
+.rakeTasks
+Gemfile.lock
+.yardoc
