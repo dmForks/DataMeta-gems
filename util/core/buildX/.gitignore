@@ -1,0 +1,6 @@
+doc
+*log
+.rakeTasks
+*.compile
+*.test
+*.runtime
