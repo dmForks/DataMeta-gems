@@ -1,0 +1,13 @@
+# or adjust as needed.
+%w(yard rake/testtask).each{ |r| require r}
+
+Rake::TestTask.new do |t|
+  t.libs << 'test'
+end
+
+desc 'Regen RDocs'
+task :default => :docs
+
+YARD::Rake::YardocTask.new('docs') {|r|
+    r.stats_options = ['--list-undoc']
+}
