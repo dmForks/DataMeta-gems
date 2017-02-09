@@ -340,12 +340,12 @@ Parameters:
       out.puts <<ENTITY_CLASS_HEADER
 package #{javaPackage};
 #{importSetToSrc(javaImports fields.values)}
-import org.datameta.core.Verifiable;
+import org.ebay.datameta.dom.Verifiable;
 import java.util.Objects;
 import java.util.StringJoiner;
-import org.datameta.core.VerificationException;
-import org.datameta.util.jdkSemanticVersion;
-import static org.datameta.core.CannedRegexUtil.getCannedRegEx;
+import org.ebay.datameta.dom.VerificationException;
+import org.ebay.datameta.util.jdk.SemanticVersion;
+import static org.ebay.datameta.dom.CannedRegexUtil.getCannedRegEx;
 
 #{PojoLexer.classJavaDoc record.docs}public class #{baseName} implements Verifiable {
 
@@ -579,8 +579,8 @@ package #{javaPackage};
 
 #{importSetToSrc(imports)}
 
-import org.datameta.core.DataMetaSame;
-import org.datameta.util.jdkSemanticVersion;
+import org.ebay.datameta.dom.DataMetaSame;
+import org.ebay.datameta.util.jdk.SemanticVersion;
 
 #{PojoLexer.classJavaDoc record.docs}public class #{javaClass} implements DataMetaSame<#{dmClass}>{
 #{INDENT}/**
@@ -650,8 +650,8 @@ import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.datameta.core.DataMetaEntity;
-import org.datameta.util.jdkSemanticVersion;
+import org.ebay.datameta.dom.DataMetaEntity;
+import org.ebay.datameta.util.jdk.SemanticVersion;
 import static java.util.Collections.unmodifiableMap;
 
 #{enumJavaDoc(enum.docs)}public enum #{baseName} implements DataMetaEntity {
@@ -744,7 +744,7 @@ Generates Java source code for the DataMeta DOM Mapping, DataMeta DOM keyword "<
       out.puts <<MAPPING_CLASS_HEADER
 package #{javaPackage};
 
-import org.datameta.core.Mapping;
+import org.ebay.datameta.core.Mapping;
 #{importText}
 import java.util.Collection;
 import java.util.Collections;
@@ -752,7 +752,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.datameta.util.jdkSemanticVersion;
+import org.ebay.datameta.util.jdk.SemanticVersion;
 
 #{PojoLexer.classJavaDoc mapping.docs}public final class #{baseName} implements Mapping<#{mapGeneric}>{
 
@@ -811,7 +811,7 @@ Generates Java source code for the DataMeta DOM BitSet, DataMeta DOM keyword "<t
       out.puts <<BIT_SET_HEADER
   package #{javaPackage};
 
-  import org.datameta.core.BitSetImpl;
+  import org.ebay.datameta.core.BitSetImpl;
   #{importTxt}
   #{PojoLexer.classJavaDoc bitSet.docs}public final class #{baseName} extends BitSetImpl<#{toType}>{
     public static final int MAX_BIT = #{maxBit};

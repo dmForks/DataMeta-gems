@@ -62,7 +62,7 @@ INDEX = :index
 NO_NAMESPACE = ''.to_sym
 
 # Wiki for DataMeta DOM
-WIKI = 'http://FIXME'
+WIKI = 'https://github.com/eBayDataMeta/DataMeta'
 
 # HTML tag referencing the WIKI
 WIKI_REF_HTML = "<a href='#{WIKI}'>DataMeta</a>"

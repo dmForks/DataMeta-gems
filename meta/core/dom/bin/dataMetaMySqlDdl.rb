@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 # this script generates the SQL DDL for the DataMeta DOM model
 # Example, from gem root:
-#    dataMetaMySqlDdl.rb ../../../dataMeta/showCase.dataMeta ../../../../../target/sql
+#    dataMetaMySqlDdl.rb ../../../dataMeta/showCase.dmDom ../../../../../target/sql
 
 %w(dataMetaDom dataMetaDom/mySql dataMetaDom/help).each(&method(:require))
 

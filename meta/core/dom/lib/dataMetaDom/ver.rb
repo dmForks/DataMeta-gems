@@ -230,7 +230,6 @@ Resets stateful information on the entity level, like docs that should not apply
             docs.clear
         end
 
-
 =begin rdoc
 Attempts to parse an instance of Ver from the current line on the given instance of SourceFile.
 Returns the instance of Ver if successful, nil otherwise.
