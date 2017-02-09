@@ -75,6 +75,7 @@ were defined. Verifies integrity.
                 @reRefs[reKey] << ref
             }
         }
+        raise RuntimeError, "No version defined on #{self}" unless ver
         self
     end
 

@@ -81,6 +81,10 @@ Parses this DataMeta DOM source into the given Model.
             if (newVer = VerDoccable.verConsumed?(self))
                 raise RuntimeError, "Only one version definition allowed, second one found in line #{@lineNum}" if self.ver
                self.ver = newVer
+               model.ver = newVer # plant it straight into the model per the latest design
+               raise ArgumentError,
+                     %<Model version already defined as #{model.ver} but the file #{@path} tries to redefine it to #{newVer}.
+This is not allowed: all included files should define same version> unless model.ver && newVer == model.ver
                next
             end
             case @line

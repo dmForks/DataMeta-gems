@@ -56,3 +56,5 @@ rdoc/
 
 # Applications
 *.log
+
+.rakeTasks

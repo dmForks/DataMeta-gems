@@ -2,7 +2,7 @@
 # this script generates Java POJOs and the SQL DDL for the DataMeta DOM model
 # Sample:
 # mkdir ../../../../../target/pojo
-# dataMetaPojo.rb ../../../dataMeta/showCase.dataMeta ../../../../../target/pojo
+# dataMetaPojo.rb ../../../dataMeta/showCase.dmDom ../../../../../target/pojo
 
 %w(dataMetaDom dataMetaDom/pojo dataMetaDom/help).each(&method(:require))
 
