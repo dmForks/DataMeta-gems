@@ -1,0 +1,13 @@
+History.txt
+Manifest.txt
+PostInstall.txt
+README.rdoc
+Rakefile
+lib/dataMetaParse.rb
+lib/dataMetaParse/basic.treetop
+lib/dataMetaParse/uriDataMeta.treetop
+lib/dataMetaParse/uriDataMeta.rb
+test/test_helper.rb
+test/numbers.treetop
+test/test_uriParser.rb
+test/test_numbers.rb

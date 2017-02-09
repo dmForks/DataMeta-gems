@@ -1,0 +1,110 @@
+grammar DataMetaUrl
+
+# DataMeta URL definition, a part of a URL definition
+
+    include DataMetaCommonsRoot
+
+    rule dataMetaUri
+       proto:urlProtocol '://' userPwd:userSpec? host:hostName port:portSpec? uTail:urlTail? {
+           def user?
+              !userPwd.text_value.empty? && userPwd.name && !userPwd.name.empty?
+           end
+           def pwd?
+              !userPwd.text_value.empty? && userPwd.password && !userPwd.password.empty?
+           end
+           def port?
+              !port.text_value.empty?
+           end
+
+           def tail?
+              !uTail.text_value.empty?
+           end
+
+           def path?
+               !uTail.text_value.empty? && uTail.path
+           end
+           def path
+               uTail.path
+           end
+           def query?
+               !uTail.text_value.empty? && uTail.query
+           end
+           def query
+               uTail.query
+           end
+       }
+    end
+
+# Order is important, if you put "http" in front of the "https", https match will fail
+    rule urlProtocol
+       'https' / 'http' / 'ftp' / 'hdfs' / 'mysql' / 'oracle'
+    end
+
+    rule urlTail
+      '/' uPath:urlPath? uQuery:urlQuery? {
+         def path
+           uPath.text_value.empty? ? nil : uPath.text_value
+         end
+         def query
+            uQuery.text_value.empty? ? nil : uQuery.query
+         end
+      }
+    end
+
+    rule urlPath
+      (urlPathChar+)
+    end
+
+    rule urlPathChar
+      wordChar / '-' / '/' / '.'
+      #!'?' # - this causes infinite loop
+    end
+
+  rule urlQuery
+    '?' queryText:(notBlanks+) {
+       def query
+          queryText.text_value.empty? ? nil : queryText.text_value
+       end
+    }
+  end
+
+  rule hostChar
+     wordChar / '-' / '.'
+  end
+
+  rule hostName
+     hostChar+
+  end
+
+  rule portSpec
+    ':' portNumber:(digit+) {
+       def number # port number or nil if none, can not default it here because it depends on the protocol
+          text_value.empty? ? nil : portNumber.text_value.to_i
+       end
+    }
+  end
+
+  rule notAtSymbol
+    !'@' .
+  end
+
+  rule pwdSpec
+    ':' pwd:(notAtSymbol+) {
+       def empty?
+          text_value.empty?
+       end
+    }
+  end
+
+  rule userSpec
+    user:(wordChar+) pwdOpt:pwdSpec? '@' {
+       def name
+           user.text_value.empty? ? nil : user.text_value
+       end
+       def password
+          pwdOpt.text_value.empty? ? nil : pwdOpt.pwd.text_value
+       end
+    }
+  end
+
+end
