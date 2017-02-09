@@ -1,0 +1,236 @@
+grammar DataMetaCommonsRoot
+
+# Some staple rules
+# w in the name means “whitespace”, e means End of Line, and capitalization means that the
+# capitalized part is required (contrary to being optional).
+
+
+    # Required whitespace
+    rule W
+       [\s]+
+    #  [ \t]+
+    end
+
+    rule notBlank
+      (!W .)
+    end
+
+    rule notBlanks
+      notBlank+
+    end
+
+    rule E
+       "\n"
+    end
+
+    # to the End Of Line inclusively
+    rule toE
+      tillE? E
+    end
+
+    # to the End Of Line exclusively
+    rule tillE
+      notE+
+    end
+
+    rule notE
+       (!E .)
+    end
+
+    # Optional whitespace
+    rule we
+      wE?
+    end
+
+    # Optional whitespace with required EOL
+    rule wE
+      ( ( W "\n" / w meshLineComment / w "\n" ) w meshLineComment? )+
+    end
+
+    # Optional whitespace
+    rule w
+      W?
+    end
+
+    # Comment used in scripting languages like Bash, Ruby etc.
+    rule meshLineComment
+      '#' (!"\n" .)* "\n"
+    end
+
+    # /* */ comment used in C, Java etc, multiline
+    rule slashStarComment
+      '/*'
+      (
+        !'*/'
+        (. / "\n")
+      )*
+      '*/'
+    end
+
+    # Uppercase A to Z
+    rule AZ
+      [A-Z]+
+    end
+
+    # Lowercase A to Z
+    rule az
+      [a-z]+
+    end
+
+    # Alphabetical
+    rule alpha
+      [a-zA-Z]+
+    end
+
+    # Decimal digit
+    rule digit
+      [0-9]
+    end
+
+    rule dot
+       '.'
+    end
+
+    rule plus
+       '+'
+    end
+
+    rule minus
+       '-'
+    end
+
+    rule sign
+      plus / minus
+    end
+
+    rule decIntNoSign
+        digit+
+    end
+
+    rule decIntSignable
+       sign? decIntNoSign
+    end
+
+    rule decFraction
+       dot decIntNoSign
+    end
+
+    rule signDotDecFrac
+       sign? dot decIntNoSign
+    end
+
+    rule decIntDotFrac
+      decIntSignable dot
+    end
+
+    rule fullDecFrac
+      decIntSignable decFraction
+    end
+
+    rule fixedDecimal
+       fullDecFrac /signDotDecFrac / decIntDotFrac
+    end
+
+    # Hexacedimal digit
+    rule hexDigit
+      [0-9A-Fa-f]
+    end
+
+    # Alphanumeric
+    rule alphaNum
+      [0-9A-Za-z]
+    end
+
+    # dataMeta "Word" character, can be a part of a indentifier name.
+    rule wordChar
+      [0-9A-Za-z_]
+    end
+
+    rule dmWord
+      wordChar+
+    end
+
+    # Class name, first uppercase, then any of the word components
+    rule className
+      AZ wordChar?
+    end
+
+    # Variable name, first
+    rule varName
+      [_a-z] wordChar? # allows single underscore as a var name.
+    end
+
+    # C-style comment to reuse everywhere
+    rule c_comment
+      '/*'
+      (
+        !'*/'
+        (. / "\n")
+      )*
+      '*/'
+    end
+
+    # C-Style whitespace
+    rule c_whitespace
+        c_comment / W
+    end
+
+    # C-Style End of Line comment
+    rule cEolComment
+      '//' (!"\n" .)* "\n"
+    end
+
+    rule string
+      '"' letters:( !'"' stringLetter )* '"' {
+        def fetch
+          letters.elements.map { |el| el.elements.last.fetch }.join
+        end
+      }
+    end
+
+    rule stringLetter
+      '\\' char:["ntr] {
+        def fetch
+          case char.text_value
+            when '"'; '"'
+            when 'n'; "\n"
+            when 'r'; 13.chr
+            when 't'; 9.chr
+            when '\\'; "\\"
+            else
+               raise ArgumentException, "Invalid string escape '#{char.text_value}'"
+          end
+        end
+      }
+      /
+      . {
+        def fetch
+          text_value
+        end
+      }
+    end
+
+    rule sn
+      sN?
+    end
+
+    # borrowed from: http://whitequark.org/blog/2011/09/08/treetop-typical-errors
+    # C End of line
+    rule cEol
+      ( ( S "\n" / s cEolComment / s "\n" ) s cEolComment? )+
+    end
+
+    # Scripting EOL, with mesh comment
+    rule sEol
+      ( ( S "\n" / s meshLineComment / s "\n" ) s meshLineComment? )+
+    end
+
+    rule s
+      S?
+    end
+
+    rule S
+      [ \t]+
+    end
+
+end

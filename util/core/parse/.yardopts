@@ -1,0 +1,1 @@
+--title "DataMeta Parsing Utils" -r README.md --charset UTF-8 lib/**/*rb - README.md

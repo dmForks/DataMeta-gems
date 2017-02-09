@@ -1,0 +1,23 @@
+grammar TestNumbers
+
+    include DataMetaCommonsRoot
+    rule testNumbers
+        singleDecDigitNoSign:decIntNoSign W mulDecDigitNoSign:decIntNoSign
+        W signableIntNoSign:decIntSignable W signableIntPlus:decIntSignable W signableIntMinus:decIntSignable
+        W singleDigSingleDigFrac:fixedDecimal
+        W singDigDoubleDigFrac:fixedDecimal
+        W doubleDigSingleDigFrac:fixedDecimal
+        W doubleDigDotFrac:fixedDecimal
+        W dotDigitsFrac:fixedDecimal
+        W singleDigSingleDigFracPlus:fixedDecimal
+        W singDigDoubleDigFracPlus:fixedDecimal
+        W doubleDigSingleDigFracPlus:fixedDecimal
+        W doubleDigDotFracPlus:fixedDecimal
+        W dotDigitsFracPlus:fixedDecimal
+        W singleDigSingleDigFracMinus:fixedDecimal
+        W singDigDoubleDigFracMinus:fixedDecimal
+        W doubleDigSingleDigFracMinus:fixedDecimal
+        W doubleDigDotFracMinus:fixedDecimal
+        W dotDigitsFracMinus:fixedDecimal
+    end
+end

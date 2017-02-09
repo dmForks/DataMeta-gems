@@ -1,0 +1,13 @@
+%w(yard rdoc/task rake/testtask fileutils ./lib/dataMetaParse).each{ |r| require r}
+
+Rake::TestTask.new do |t|
+  t.libs << 'test'
+end
+
+desc 'Regen RDocs'
+task :default => :docs
+
+YARD::Rake::YardocTask.new('docs') {|r|
+    r.stats_options = ['--list-undoc']
+}
+
