@@ -32,8 +32,8 @@ __path__ = extend_path(__path__, __name__)
 
 import re
 
-from datameta_core.base import Verifiable, DateTime, Migrator, SemVer
-from datameta_core.canned_re import CannedRe
+from ebay_datameta_core.base import Verifiable, DateTime, Migrator, SemVer
+from ebay_datameta_core.canned_re import CannedRe
 
 # noinspection PyCompatibility
 from enum import Enum

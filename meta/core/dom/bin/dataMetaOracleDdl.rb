@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 # this script generates the SQL DDL for the DataMeta DOM core model
 # Example, from gem root:
-#    dataMetaOracleDdl.rb ../../../dataMeta/showCase.dataMeta ../../../../../target/sql
+#    dataMetaOracleDdl.rb ../../../dataMeta/showCase.dmDom ../../../../../target/sql
 
 %w(dataMetaDom dataMetaDom/ora dataMetaDom/help).each(&method(:require))
 
