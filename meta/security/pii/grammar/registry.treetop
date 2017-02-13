@@ -1,0 +1,66 @@
+# PII Master Registry DSL grammar
+# to debug, uncomment next line and add this anywhere: &{|s| debugger; true }
+#require 'ruby-debug'
+
+grammar PiiRegistry
+
+    # Load the commons from the DataMetaParse which lives in:
+    #    binary: http://FIXME
+    #    documentation: http://FIXME
+    #    source: https://FIXME
+    #include DataMetaCommonsRoot
+    include PiiCommons
+
+    # Master rule
+    rule piiDef
+       piiWss? verDef:version piiWss? fields:piiFields piiWs?
+    end
+
+    # PII fields definitions - not much, just a list of PII keys with attributes one or more.
+    rule piiFields
+        piiAttrbs+ {
+        # the type method makes it simple to distinguish between the rules; the Treetop standard API does not provide such facility yet
+            def type; 'piiFields' end
+        }
+    end
+
+    # The PII key with attributes (one or more), i.e. key=value, optionally ornamented/separated by comments, whitespaces including newlines
+    rule piiAttrbs
+      piiWs? fldKey:piiKey piiWs? '{' piiWs? attrbLst:attrbList piiWs? '}' {
+            def type
+               'piiAttrbs'
+            end
+            def pk; fldKey.text_value end
+        }
+    end
+
+    # most complicated rule in this grammar: attribute list, i.e. key=value, optionally ornamented/separated by comments, whitespaces including newlines
+    rule attrbList
+       attrb (',' w attrb)* {
+            def type; 'attrbList' end
+
+            # Main method for the AST traversal to collect the attributes
+            def attrbs
+                DataMetaPii::digAstElsType('keySym', elements)
+            end
+        }
+    end
+
+# attribute: for now, kvSym only
+    rule attrb
+        kvs:kvSym {
+            def type; 'attrb' end
+        }
+    end
+
+# Key-Value, where value is a symbol
+# surrounding quotes.
+    rule kvSym
+        key:symbol w '=' w val:symbol
+        {
+            def type; 'keySym' end
+            def k; key.text_value end
+            def v; val.text_value end
+        }
+    end
+end

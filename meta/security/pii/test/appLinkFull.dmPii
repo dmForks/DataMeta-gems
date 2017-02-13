@@ -1,0 +1,71 @@
+# DSL describing Connection between the PII abstract definition and application concretics
+# This is full definition that can be parsed and structured.
+
+ver "12.489.2.alpha"
+
+# Reusable Attributes Division
+attributes {
+   universalConstants {
+       piPositive: 3.14, # numers and decimal point: Float
+       piNegative: -3.14, # check the negative case
+       universe: "Forty-two",
+       @sam# reference to the reusable, see further down
+   }
+   ints {
+       maxInstanceCount: 0012, # numbers only, no decimal point: perceived/rendered as an Integer
+       foo: -019 # check the negative case; note that octal conversion does not apply like with literals in Ruby code
+   }
+   sam { # Can the parser handle strings with C-like backslash escapes?
+       says: "Sam \t says, \"You kidding me, right?\"",
+       @donald # should be able to handle cycles in the inclusion tree
+   }
+   donald {
+       quacks: "Quack!",
+       @sam # should be able to handle cycles in the inclusion tree
+   }
+   # see if the parser can handle a one-liner
+   noise { @donald, spectrum: "white", @sam, @ints }
+}
+
+# Application Division
+apps {
+    pollingServices { # Unique application ID; should be unique throughout the config, each app responsible for its own def
+        # or make it centralized, standard??
+        Name_Full { # the PII key from the abstract definition
+            # Application-specific attributes for this field (need to standardize them?):
+
+            # DataMeta DOM record's name, without the version let alone the package: the application
+            # should be aware of those details and be flexible. From this, can infer the InOutable and migration calls
+            voClass: Name,
+            # list of database fields that store this value
+            bigTableFields: "users:name, clients:fullName",
+            @ints # reference to the reusables
+        }
+
+        TwoFA_Token_Serial_Number {
+            voClass: TwoFaSerialNumber,
+            bigTableFields: "security:twoFa",
+            @universalConstants,@ints
+        }
+    }
+
+    bcastingServices {
+        Name_First {
+            voClass: Name,
+            oracleFields: "USERS:FIRST_NAME",
+            lapseCount: 0123,
+            median: -123.4567,
+            weight: 987.65432
+        }
+        Name_Last {
+            voClass: Name,
+            oracleFields: "USERS:LAST_NAME"
+        }
+        Date_Of_Birth {
+            voClass: BirthDate, # plain symbol, no enclosure: perceived/rendered as a string
+            logFormat: "yyyy-MM-dd HH:mm:SS", # enclosured in a string: perceived/rendered as a string
+            @universalConstants,
+            bigTableFields: "users:dob,clients:birthDate" # enclosured in a string: perceived/rendered as a string
+        }
+    }
+}

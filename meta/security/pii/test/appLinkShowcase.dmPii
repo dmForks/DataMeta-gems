@@ -1,0 +1,73 @@
+# This definition is for grammar testing/debugging only.
+# An attempt to pass it through structuring should fail because there are intentional violations
+# of a exogrammatical structure: for example, multiple VO definitions are allowed by the grammar
+# but the CST builder rejects those with an error.
+
+ver "1.2.3.4.beta" # Full version presented here
+
+# Reusable Attributes Division
+attributes {
+  universalConstants {
+       piPositive: 3.14, # numers and decimal point: Float
+       piNegative: -3.14, # check the negative case
+       universe: "Forty-two",
+       @sam, # reference to the reusable, see further down
+@symbolSoloOnLine,
+boo: 1.23, foo:-35.36,
+    @symbolLeadinWsAndTrailingComment, # endline comment for this
+@symbolWithTrailingComment, # endline comment
+    @symbolWithLeadingWhitespace, str:"Some \n string"
+  }
+   ints {
+       maxInstanceCount: 4, # numbers only, no decimal point: perceived/rendered as an Integer
+       foo: -4 # check the negative case
+   }
+   sam { # Can the parser handle strings with C-like backslash escapes?
+       says: "Sam \t says, \"You kidding me, right?\""
+   }
+   donald {
+       quacks: "Quack!"
+   }
+   # see if the parser can handle a one-liner
+   noise { @donald, spectrum: "white", @sam }
+}
+
+# Application Division
+apps {
+    pollingServices { # Unique application ID; should be unique throughout the config, each app responsible for its own def
+        # or make it centralized, standard??
+        Name_Full { # the PII key from the abstract definition
+            # Application-specific attributes for this field (need to standardize them?):
+
+            # DataMeta DOM record's name, without the version let alone the package: the application
+            # should be aware of those details and be flexible. From this, can infer the InOutable and migration calls
+            voClass: Name,
+            # list of database fields that store this value
+            mySqlFields: "users:name, clients:fullName",
+            @ints # reference to the reusables
+        }
+
+        TwoFA_Token_Serial_Number {
+            voClass: TwoFaSerialNumber,
+            db2Fields: "security:twoFa",
+            @universalConstants,@ints
+        }
+    } # try this
+    bcastingServices {
+    Date_Of_Birth {
+voClass:FirstClass,
+voClass: SecondClass,
+voClass : ThirdClass,
+voClass :FourthClass,
+# Leading space
+    voClass: FifthClass,
+    voClass: SixthClass, # tail comment
+voClass :SeventhClass # tail with no leading whitespace
+    }
+    TwoFA_Token_Serial_Number {
+        voClass: TwoFaSerialNumber,
+        bigTableFields: "security:twoFa",
+        @universalConstants,@ints
+    }
+    }
+}
