@@ -1,0 +1,9 @@
+doc
+*log
+.rakeTasks
+Gemfile.lock
+.yardoc
+gen
+dw_bid_test.data
+.tmp
+.usr
