@@ -1,0 +1,214 @@
+# PII Master Registry to Application Link DSL grammar
+# to debug, uncomment next line and add this anywhere: &{|s| debugger; true }
+#require 'ruby-debug'
+
+grammar PiiAppLink
+
+# include the PII commons definition, rules shared between PII grammars; it's likely in the same directory
+# as this file
+    include PiiCommons
+
+# Top level rule - encompasses the whole definition file
+    rule appLink
+        piiWss? verDef:version piiWss? ad:attrbDiv? piiWss? al:appLinkDiv piiWss?
+    end
+
+# Rule for the Attributes Division that defines reusable attributes
+    rule attrbDiv
+        'attributes'  piiWss? '{' piiWss? a:attrbSectionSet piiWss? '}' {
+           def type; 'attrbDiv' end
+        }
+    end
+
+# Helper rule: a set of attribute sections
+    rule attrbSectionSet
+        attrbSection+
+    end
+
+# Attribute Section with the attribute set's ID and the attributes under it.
+    rule attrbSection
+        piiWss? k:symbol piiWss? '{' piiWss? a:attrbList piiWss? '}' piiWss? {
+            def type; 'attrbSect' end
+            def pk; k.text_value end
+        }
+    end
+
+# Application Link Division:
+    rule appLinkDiv
+        'apps' piiWss? '{' piiWss? a:appLinkSectionSet+ '}' piiWss? {
+            def type; 'appLinkDiv' end
+        }
+    end
+
+# Set of Application Link definitions for one application/service: App/Service ID and matching attributes under it,
+# including reusables.
+    rule appLinkSectionSet
+      piiWs? k:symbol piiWss? '{' piiWss? a:appLinkList piiWss? '}' piiWss? {
+            def type
+               'appLinkAapps'
+            end
+            def ak; k.text_value end
+        }
+    end
+
+# An aggregate of Application Link definitions for one Abstract PII ID
+    rule appLinkList
+        appLinkAttrbs+ {
+            def type; 'appLinkList' end
+        }
+    end
+
+# The PII key with attributes (one or more), i.e. key=value, optionally ornamented/separated by comments, whitespaces including newlines
+    rule appLinkAttrbs
+      piiWss? k:piiKey piiWss? '{' piiWss? a:attrbList piiWss? '}' piiWss? {
+            def type
+               'appLinkAttrbs'
+            end
+            def pk; k.text_value end
+        }
+    end
+
+# The aggregate of attributes belonging to a PII ID under Application/Service ID
+    rule attrbList
+        h:attrbDef t:(c:',' w:piiWss? v:attrbDef)* {
+            def type; DataMetaPii::ATTRB_LIST_NODE_TYPE end
+            # seemingly, an alternative to deep digging
+            # def getAll; result = [h]; if t; result << t.v.elements.map{|e| e} end; result.flatten end
+            # but it does not work: the parser does not collect all the v elements under t
+        }
+    end
+
+# One single attribute definition: it can be either constant, or a reference to a reusable or a special
+# case of the VO (Value Object) class such as Scala Case Class or a Java Storage Class/Java Bean.
+    rule attrbDef
+        ch:(c:constDef / r:refVal / v:voClass) piiWss? {
+            def type; DataMetaPii::ATTRB_DEF_NODE_TYPE end
+            def val
+                case nodeType
+                    when DataMetaPii::REF_KEY
+                        ch.r.sym
+                    when  DataMetaPii::CONST_KEY
+                        ch.c.val
+                    when DataMetaPii::VO_CLASS_KEY
+                        ch.v.klass
+                else # neither -- raise an error
+                    raise ArgumentError, %<Unsupported attribute definition type in "#{self.text_value}">
+                end
+            end
+            def node
+                case nodeType
+                    when DataMetaPii::REF_KEY
+                        ch.r
+                    when  DataMetaPii::CONST_KEY
+                        ch.c
+                    when DataMetaPii::VO_CLASS_KEY
+                        ch.v
+                else # neither -- raise an error
+                    raise ArgumentError, %<Unsupported attribute definition type in "#{self.text_value}">
+                end
+            end
+            def nodeType # figure out the type of this definition
+                if ch.respond_to?(:r)
+                    DataMetaPii::REF_KEY
+                elsif ch.respond_to?(:c)
+                    DataMetaPii::CONST_KEY
+                elsif ch.respond_to?(:v)
+                    DataMetaPii::VO_CLASS_KEY
+                else # neither -- raise an error
+                    raise ArgumentError, %<Unsupported attribute definition type in "#{self.text_value}">
+                end
+            end
+        }
+    end
+
+# Value Object (such as Java Bean or Scala Case class)
+    rule voClass
+        w 'voClass' w ':' w c:properCaseSym piiWss? {
+            def type; DataMetaPii::VO_CLASS_KEY end
+            def klass; c.text_value end
+        }
+    end
+
+# Reference to a reusable definition
+    rule refVal
+        '@' symElem:symbol piiWss? {
+            def type; DataMetaPii::REF_KEY end
+            def sym; symElem.text_value end
+        }
+    end
+
+# Constant definition
+    rule constDef
+        k:symbol w ':' w v:constValue {
+            def type; DataMetaPii::CONST_KEY end
+            def key; k.text_value end
+            def val; v.text_value end
+            def valNode; v end
+            def keyNode; k end
+            # has to be defined here because the definition on constValue does not work
+            def dataType # report the type of this constant
+                if v.respond_to?(:s)
+                    DataMetaPii::STR_CONST_DT # it's a string
+                elsif v.respond_to?(:d)
+                    DataMetaPii::DECIMAL_CONST_DT # it's a decimal number with a fraction
+                elsif v.respond_to?(:i)
+                    DataMetaPii::INT_CONST_DT # it's an integer number without a fraction
+                else
+                    raise ArgumentError, %<Unsupported constant type in "#{self.text_value}">
+                end
+            end
+            # has to be defined here because the definition on constValue does not work
+            def nodeVal
+                case dataType
+                    when DataMetaPii::STR_CONST_DT # it's a string
+                        eval(val)
+                    when DataMetaPii::DECIMAL_CONST_DT # it's a decimal number with a fraction
+                        BigDecimal.new(val)
+                    when DataMetaPii::INT_CONST_DT # it's an integer number without a fraction
+                        val.to_i
+                else
+                    raise ArgumentError, %<Unsupported constant type in "#{self.text_value}">
+                end
+            end
+        }
+    end
+
+# constant value: either an optionally signed integer or optionally signed decimal with fraction
+    rule constValue
+        d:fixedDecimal / i:decIntSignable / s:string {
+            def type
+                'constValue'
+            end
+            # This does not work, probably because of the "OR" condition. The one on constDef does.
+            # Keeping it with the comment to avoid the temptation to move it back here in future, unless
+            # the treetop team fixes the bug
+            def nodeVal
+                case dataType
+                    when DataMetaPii::STR_CONST_DT # it's a string
+                        eval(eval(text_value))
+                    when DataMetaPii::DECIMAL_CONST_DT # it's a decimal number with a fraction
+                        BigDecimal.new(text_value)
+                    when DataMetaPii::INT_CONST_DT # it's an integer number without a fraction
+                        text_value.to_i
+                else
+                    raise ArgumentError, %<Unsupported constant type in "#{self.text_value}">
+                end
+            end
+            # This does not work, probably because of the "OR" condition. The one on constDef does.
+            # Keeping it with the comment to avoid the temptation to move it back here in future, unless
+            # the treetop team fixes the bug
+            def dataType # report the type of this constant
+                if self.respond_to?(:s)
+                    DataMetaPii::STR_CONST_DT # it's a string
+                elsif self.respond_to?(:d)
+                    DataMetaPii::DECIMAL_CONST_DT # it's a decimal number with a fraction
+                elsif self.respond_to?(:i)
+                    DataMetaPii::INT_CONST_DT # it's an integer number without a fraction
+                else
+                    raise ArgumentError, %<Unsupported constant type in "#{self.text_value}">
+                end
+            end
+        }
+    end
+
+end

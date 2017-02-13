@@ -1,0 +1,46 @@
+# PII rules common between the concrete grammers, to be reused.
+grammar PiiCommons
+
+    # Load the commons from the DataMetaParse which lives in:
+    #    binary: http://FIXME
+    #    documentation: http://FIXME
+    #    source: https://FIXME
+    include DataMetaCommonsRoot
+
+# PII field key - a sequence of symChar, one or more
+    rule piiKey
+        symChar+
+    end
+
+# One or more PII Whitespaces
+    rule piiWss
+       piiWs+
+    end
+
+# PII Whitespace: a comment with endline or a plain whitespace as defined in DataMeta Parsing Commons
+    rule piiWs
+       sEol / W
+    end
+
+# Symbol with the first letter lowercase - suitable for a variable name.
+    rule symbol
+       [a-z] symChar*
+    end
+
+# Symbol with the first letter uppercase - suitable for a class name.
+    rule properCaseSym
+       [A-Z] symChar*
+    end
+
+# Symbol character: letter, number, underscore
+    rule symChar
+        [a-zA-Z0-9_]
+    end
+
+    rule version
+        'ver' W v:string {
+            def type; 'version' end
+            def ver; eval(v.text_value) end
+        }
+    end
+end
