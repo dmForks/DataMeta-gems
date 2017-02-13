@@ -1,0 +1,35 @@
+# DSL describing Connection between the PII abstract definition and application concretics
+# This is full definition that can be parsed and structured.
+# For testing/structuring purposes, the attributes division is missing and
+# no reusables are referred to.
+
+ver "3.423.11.19"
+
+# Application Division
+apps {
+    pollingServices { # Unique application ID; should be unique throughout the config, each app responsible for its own def
+        # or make it centralized, standard??
+        Name_Full { # the PII key from the abstract definition
+            # Application-specific attributes for this field (need to standardize them?):
+
+            # DataMeta DOM record's name, without the version let alone the package: the application
+            # should be aware of those details and be flexible. From this, can infer the InOutable and migration calls
+            voClass: Name,
+            # list of database fields that store this value
+            oracleFields: "users:name, clients:fullName"
+        }
+
+        TwoFA_Token_Serial_Number {
+            voClass: TwoFaSerialNumber,
+            oracleFields: "security:twoFa"
+        }
+    }
+
+    bcastingServices {
+        Date_Of_Birth {
+            voClass: BirthDate, # plain symbol, no enclosure: perceived/rendered as a string
+            logFormat: "yyyy-MM-dd HH:mm:SS", # enclosured in a string: perceived/rendered as a string
+            oracleFields: "users:dob,clients:birthDate" # enclosured in a string: perceived/rendered as a string
+        }
+    }
+}

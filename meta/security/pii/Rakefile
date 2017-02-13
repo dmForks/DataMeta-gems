@@ -1,0 +1,13 @@
+%w(yard rake/testtask ./lib/dataMetaPii).each{ |r| require r}
+
+Rake::TestTask.new do |t|
+  t.libs << 'test'
+end
+
+desc 'Regen Yard docs'
+task :default => :docs
+
+YARD::Rake::YardocTask.new('docs') {|r|
+    r.stats_options = ['--list-undoc']
+}
+

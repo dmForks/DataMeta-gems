@@ -1,0 +1,28 @@
+# Master Definition Of the PII fields
+# the "taboo" level means that under no circumstances the value should be stored.
+
+# PII field definition format:
+#             PII-Field-UniqueKey {PROFILE-KEY {level=IMPACT_LEVEL}}
+
+# These impact levels are picked at random for testing, check with your company's policies
+# for real impact levels. 
+
+ver "1.0.0"
+
+Corp_User_Name { # PII field unique key
+        level=taboo # "taboo" : in this profile, under no circumstances this field can be stored or rendered in the logs
+}
+
+Date_Of_Birth { level=restricted }
+
+TwoFA_Token {level=confidential, dataType=access}
+
+Home_City {level=confidential, dataType=location}
+Home_Country {level=confidential}
+Home_State {level=confidential} # State or Province
+Home_Zip {level=confidential} # U.S. ZIP code
+Name_First {level=confidential}
+Name_Last {level=internal}
+Name_Middle {level=public}
+Name_Full {level=confidential,enabled=true, owner=nameKeeper}
+
