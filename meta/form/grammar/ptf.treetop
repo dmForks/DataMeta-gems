@@ -1,0 +1,67 @@
+# DataMeta file format grammar
+grammar DataMetaForm
+
+    include DataMetaCommonsRoot
+
+# Top level grammatical structure - the whole format from top to bottom
+    rule formatDefinition
+       fmtWhiteSpaces? recordOpen flds:fields recordClose
+    end
+
+# Record open element, keyword "record"
+    rule recordOpen
+      "record" fmtWhiteSpaces
+    end
+
+# Record close element, keyword "end"
+    rule recordClose
+      "end" fmtWhiteSpaces?
+    end
+
+# Arbitrary number of various whitespaces including comments
+    rule fmtWhiteSpaces
+        c_whitespace+
+    end
+
+# Between "record" and "end" there are field items
+    rule fields
+      ( fli:fieldListItem fmtWhiteSpaces)+
+    end
+
+# A field list item is either delimiter specification or field specification
+    rule fieldListItem
+       delimSpec / fieldSpec
+    end
+
+# Field specification: optional/required flag, field name and optional format
+    rule fieldSpec
+      orf:optReqFlag fieldName:dmWord fmtSpec:formatSpec? {
+         def type; 'fs' end
+         def fmt
+           fmtSpec.text_value.empty? ? nil : fmtSpec.fmt.text_value
+         end
+      }
+    end
+
+# Delimiter specification
+    rule delimSpec
+      '\\' sym:('BEL' / 'LF' / 'TAB' / 'NUL' / 'SOH' / 'STX' / 'ETX' / 'EOT' / 'ENQ' / 'ACK' / 'BEL' / 'BS' /
+       'HT' / 'NL' / 'VT' / 'NP' / 'CR' / 'SO' / 'SI' / 'DLE' / 'DC1' / 'DC2' / 'DC3' / 'DC4' / 'NAK' / 'SYN' /
+        'ETB' / 'CAN' / 'EM' / 'SUB' / 'ESC' / 'FS' / 'GS' / 'RS' / 'US' / 'SP'
+      ) {
+         def type; 'delim' end
+      }
+    end
+
+# Field format specification
+    rule formatSpec
+      '|' fmt:(!'|' .)+ '|'
+    end
+
+# Optional or Required flag - plus for required field, minus for optional
+    rule optReqFlag
+       ('+' / '-') {
+          def isReq; text_value == '+' end
+       }
+    end
+end
