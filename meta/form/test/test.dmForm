@@ -1,0 +1,17 @@
+/*
+  Backspace codes specified as standard ASCII:
+  http://www.december.com/html/spec/ascii.html
+
+  There may be extra codes introduced later
+
+*/
+record
+    +user_id
+    \BEL    +first
+    \BEL    -mid
+    \BEL    +last
+    \BEL    +salary
+    \BEL    +created|yyyy-MM-dd HH:mm:ss|
+    \BEL    -last_mod|yyyy-MM-dd HH:mm:ss|
+    \BEL    \NL
+end

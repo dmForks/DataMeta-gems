@@ -1,0 +1,12 @@
+%w(yard rake/testtask ./lib/dataMetaForm).each{ |r| require r}
+
+Rake::TestTask.new do |t|
+  t.libs << 'test'
+end
+
+desc 'Regen RDocs'
+task :default => :docs
+
+YARD::Rake::YardocTask.new('docs') {|r|
+    r.stats_options = ['--list-undoc']
+}
