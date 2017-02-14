@@ -22,8 +22,8 @@ Attempts to consume/parse an enum from the given source on the given model, retu
   * src - an instance of SourceFile
 =end
     def self.consumed?(model, src)
-        src.line =~ /^\s*#{ENUM}\s+(\w+)$/ ? model.addEnum(Enum.new(combineNsBase(
-             nsAdjustment(src.namespace, model.options, src), $1)).parse(src)) : nil
+        src.line =~ /^\s*#{ENUM}\s+(\w+)$/ ? model.addEnum(Enum.new(DataMetaDom.combineNsBase(
+             DataMetaDom.nsAdjustment(src.namespace, model.options, src), $1)).parse(src)) : nil
     end
 
 =begin rdoc

@@ -129,7 +129,7 @@ Parses this field from the given source.
            @trgType = DataType.parse(source, trgSpec)
            unless STANDARD_TYPES.member?(@trgType.type)
                ns, base = DataMetaDom.splitNameSpace(@trgType.type)
-               newNs = nsAdjustment(ns, model.options, source)
+               newNs = DataMetaDom.nsAdjustment(ns, model.options, source)
                newNsVer = "#{newNs}.#{base}".to_sym
                @trgType.type = newNsVer # adjust the type for the map target type too
            end
