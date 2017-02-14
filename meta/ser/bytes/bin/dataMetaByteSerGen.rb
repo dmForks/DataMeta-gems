@@ -10,6 +10,7 @@ DataMetaByteSer::helpDataMetaBytesSerGen(__FILE__, "Writables destination direct
 begin
     @parser.parse(@source)
     DataMetaByteSer::genWritables(@parser, @target)
+    puts "Byte Array serialization classes written to #{@target}. Done."
 rescue Exception => e
    $stderr.puts "ERROR #{e.message}; #{@parser.diagn}"
    $stderr.puts e.backtrace.inspect

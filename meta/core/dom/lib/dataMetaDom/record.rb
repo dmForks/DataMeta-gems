@@ -102,7 +102,8 @@ Attempts to consume the instance from the given source, returns it if successful
   * +src+ - an instance of SourceFile
 =end
     def self.consumed?(model, src)
-        src.line =~ /^\s*#{BITSET}\s+(\w+)\s+.+$/ ? model.addEnum(BitSet.new(combineNsBase(DataMetaDom.nsAdjustment(src.namespace, model.options, src), $1)).parse(src)) : nil
+        src.line =~ /^\s*#{BITSET}\s+(\w+)\s+.+$/ ? model.addEnum(BitSet.new(DataMetaDom.combineNsBase(
+                DataMetaDom.nsAdjustment(src.namespace, model.options, src), $1)).parse(src)) : nil
     end
 
 =begin rdoc
@@ -136,7 +137,8 @@ Attempts to consume the instance from the given source, returns it if successful
   * +src+ - an instance of SourceFile
 =end
     def self.consumed?(model, src)
-        src.line =~ /^\s*#{MAPPING}\s+(\w+)\s+.+$/ ? model.addEnum(Mappings.new(combineNsBase(DataMetaDom.nsAdjustment(src.namespace, model.options, src), $1)).parse(src)) : nil
+        src.line =~ /^\s*#{MAPPING}\s+(\w+)\s+.+$/ ? model.addEnum(Mappings.new(DataMetaDom.combineNsBase(
+                DataMetaDom.nsAdjustment(src.namespace, model.options, src), $1)).parse(src)) : nil
     end
 
 =begin rdoc
