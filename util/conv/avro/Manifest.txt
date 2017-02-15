@@ -1,0 +1,10 @@
+History.txt
+Manifest.txt
+PostInstall.txt
+README.rdoc
+Rakefile
+bin/dataMetaAvroSchemaGen.rb
+tmpl/dataClass.json
+lib/dataMetaAvro.rb
+test/test_helper.rb
+test/test_dataMetaAvro.rb

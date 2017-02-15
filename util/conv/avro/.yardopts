@@ -1,0 +1,1 @@
+--title "DataMeta support for Avro" -r README.md --charset UTF-8 lib/**/* - README.md
