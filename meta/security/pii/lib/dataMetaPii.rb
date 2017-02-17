@@ -30,7 +30,7 @@ module DataMetaPii
     GRAMMAR_ROOT = File.join(GEM_ROOT, 'grammar')
 
     # Current version
-    VERSION = '1.0.0'
+    VERSION = '1.0.1'
 # Load base rules from the DataMeta Parsing Commons
     BASE_RULES = DataMetaParse.loadBaseRulz
 # Load PII specific common rules from this very gem's codebase
@@ -527,7 +527,6 @@ Creates an instance for the given parameters, see the properties with the same n
                         errNamespace(outFmt) unless namespace.is_a?(String) && !namespace.empty?
                         pkgDir = namespace.gsub('.', '/')
                         classDest =File.join(outDirName, pkgDir)
-                        FileUtils.rmtree classDest
                         FileUtils.mkpath classDest
 
                         IO.write(File.join(classDest, "#{className}.#{outFmt}"),
@@ -540,7 +539,6 @@ Creates an instance for the given parameters, see the properties with the same n
                     when ExportFmts::PYTHON
                         pkgDir = namespace.gsub('.', '_')
                         classDest =File.join(outDirName, pkgDir)
-                        FileUtils.rmtree classDest
                         FileUtils.mkpath classDest
                         IO.write(File.join(classDest, "#{className[0].downcase + className[1..-1]}.py"),
                                  tmpl.result(binding).gsub(/\n\n+/, "\n\n"), mode: 'wb') # collapse multiple lines in 2

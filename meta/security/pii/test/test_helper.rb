@@ -10,7 +10,7 @@ require 'dataMetaParse'
 
 module DataMetaPiiTests
 
-    L = Logger.new('piiTests.log', 0, 10000)
+    L = Logger.new('piiTests.log', 0, 10_000_000)
     L.level = Logger::DEBUG
     L.datetime_format = '%Y-%m-%d %H:%M:%S'
 
