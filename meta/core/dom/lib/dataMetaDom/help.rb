@@ -18,6 +18,7 @@ DataMeta DOM version #{DataMetaDom::VERSION}
 
 HELP
 
+$stdout.flush # otherwise it may mix up with the $stderr output below
 $stderr.puts "\nERROR: #{errorText}" if errorText
 exit errorText ? 0 : 1
 end
