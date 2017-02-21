@@ -1,0 +1,68 @@
+# DataMetaDOM with all field types accounted for testing.
+namespace org.ebay.datameta.examples.conv.protobuf
+
+ver 1.0.0
+
+enum BaseColor
+   Red, Green, Blue
+end
+
+mapping Timings string[3] datetime
+   "now" => DateTime.now,
+   'then' => DateTime.parse("2012-09-29T23:45:59Z")
+end
+
+mapping Depths string[16] float[3]
+   "shallow" => 0.1,
+   "medium" => 353.232,
+   "deep" => 787.0
+end
+
+record AllTypes
+    +int[4] id
+    +int[8] count
+    +bool isIt
+    +char[5] code
+    -float[4] width
+    +float[8] height
+    +string anyLength
+    +string[16] name
+    +set{string} aliases
+    +deque{datetime} accesses
+    +list{int[4]} quants
+    +map{string[32], int[4]} strToInt
+    +map{int[8], string[40]} longToString
+    +Depths depths
+    +Timings lengths
+    +BaseColor color
+    +Includable inclo
+    identity id
+end
+
+# Check how optional fields are rendered
+record Optionals
+    +int[4] id
+    -int[8] count
+    -bool isIt
+    -char[5] code
+    -float[4] width
+    +float[8] height
+    -string anyLength
+    +string[16] name
+    -set{string} aliases
+    -deque{datetime} accesses
+    -list{int[4]} quants
+    +map{string[32], int[4]} strToInt
+    +Depths depths
+    +Timings lengths
+    -BaseColor color
+    -Includable inclo
+    identity id
+end
+
+record Includable
+   +int[8] incId
+   +string[32] name
+   +float[4] amount
+end
+
