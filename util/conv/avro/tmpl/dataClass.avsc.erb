@@ -1,0 +1,43 @@
+<%#
+Template for Avro data only protocol for one class.
+
+-%>
+{
+    "type": "record", "namespace":"<%= nameSpace %>", "name" : "<%= base %>",
+    "fields": [
+<%
+
+ vars.flds = rec.fields
+ delim = nil; rec.fields.each_key { |fldId| vars.fld=rec.fields[fldId]
+        vars.dataType = vars.fld.dataType
+        vars.dt = vars.dataType.type
+        vars.enum = model.enums[vars.dt]
+%><%=delim ? delim : ' '%><%
+        if vars.enum && vars.enum.is_a?(DataMetaDom::Enum)
+          vars.ns, vars.base = DataMetaDom.splitNameSpace(vars.dt)
+          values = vars.enum.keys.map{|k| vars.enum[k]} # sort by ordinals to preserve the order
+%>
+      {"name": "<%=vars.fld.name%>", "type": <%=wrapReqOptional(vars.fld, %^{ "name": "#{vars.base}", "type": "enum", "symbols" : [#{ values.map{|v| %<"#{v}">}.join(', ')}]}^)%>}
+<%
+        elsif vars.enum && vars.enum.is_a?(DataMetaDom::Mappings)
+          assertMapKeyType(vars.fld, vars.enum.fromT.type)
+          vars.ns, vars.base = DataMetaDom.splitNameSpace(vars.dt)
+%>
+      {"name": "<%=vars.fld.name%>", "type": <%=wrapReqOptional(vars.fld, %^{"type": "map", "values": #{avroType(vars.enum.toT)}}^)%>}<%
+        elsif vars.dt == DataMetaDom::CHAR
+%>
+      {"name": "<%=vars.fld.name%>", "type":<%=wrapReqOptional(vars.fld, %^{"name": "#{vars.fld.name}", "type": "fixed",  "size": #{vars.dataType.length}}^)%>}<%
+        elsif vars.fld.map?
+          assertMapKeyType(vars.fld, vars.dt)
+        %>
+      {"name": "<%=vars.fld.name%>", "type": <%=wrapReqOptional(vars.fld, %^{"type": "map", "values": #{avroType(vars.fld.trgType)}}^)%>} <%
+        elsif vars.fld.aggr%>
+      {"name": "<%=vars.fld.name%>", "type": <%=wrapReqOptional(vars.fld, %^{"type": "array", "items": #{avroType(vars.dataType)}}^)%>} <%
+        else %>
+      {"name" : "<%= vars.fld.name %>", "type": <%= wrapReqOptional(vars.fld, avroType(vars.dataType)) %>} <%
+        end
+   delim =","
+        }
+%>
+        ]
+}

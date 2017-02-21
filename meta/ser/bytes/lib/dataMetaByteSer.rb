@@ -1,7 +1,7 @@
 $:.unshift(File.dirname(__FILE__)) unless $:.include?(File.dirname(__FILE__)) || $:.include?(File.expand_path(File.dirname(__FILE__)))
 
 # Definition for generating Plain Old Java Objects (POJOs)
-%w(fileutils dataMetaDom dataMetaDom/pojo dataMetaDom/enum dataMetaDom/record dataMetaDom/help).each(&method(:require))
+%w(fileutils dataMetaDom dataMetaDom/pojo dataMetaDom/enum dataMetaDom/record dataMetaDom/help dataMetaDom/util).each(&method(:require))
 require 'set'
 require 'dataMetaByteSer/util'
 
@@ -14,7 +14,7 @@ For command line details either check the new method's source or the README.rdoc
 =end
 module DataMetaByteSer
     # Current version
-    VERSION = '1.0.0'
+    VERSION = '1.0.1'
     include DataMetaDom, DataMetaDom::PojoLexer
 
 =begin rdoc
@@ -126,7 +126,7 @@ HDFS Reader and Writer the Java Enums.
     ENUM_RW_METHODS = RwHolder.new(
           lambda{|ctx|
             aggrNotSupported(ctx.fld, 'Enums') if ctx.fld.aggr
-            "#{condenseType(ctx.fType.type, ctx.pckg)}.forOrd(readVInt(in))"
+            "#{DataMetaDom.condenseType(ctx.fType.type, ctx.pckg)}.forOrd(readVInt(in))"
           },
           lambda { |ctx|
             aggrNotSupported(ctx.fld, 'Enums') if ctx.fld.aggr
@@ -140,7 +140,7 @@ HDFS Reader and Writer the BitSet.
     BITSET_RW_METHODS = RwHolder.new(
           lambda { |ctx|
             aggrNotSupported(ctx.fld, 'BitSets') if ctx.fld.aggr
-            "new #{condenseType(ctx.fld.dataType, ctx.pckg)}(readLongArray(in))"
+            "new #{DataMetaDom.condenseType(ctx.fld.dataType, ctx.pckg)}(readLongArray(in))"
           },
           lambda { |ctx|
             aggrNotSupported(ctx.fld, 'BitSets') if ctx.fld.aggr
@@ -183,10 +183,10 @@ Read/write methods for the standard data types.
                     mapsNotSupported(ctx.fld)
                 else  # list, set or deque
                     "read#{aggrBaseName(aggrJavaFull(ctx.fld.aggr))}(in, #{
-                        inOutableClassName(condenseType(ctx.fType.type, ctx.pckg))}.getInstance())"
+                        inOutableClassName(DataMetaDom.condenseType(ctx.fType.type, ctx.pckg))}.getInstance())"
                 end
             else # scalar
-                "#{inOutableClassName(condenseType(ctx.fType.type, ctx.pckg))}.getInstance().read(in)"
+                "#{inOutableClassName(DataMetaDom.condenseType(ctx.fType.type, ctx.pckg))}.getInstance().read(in)"
             end
         },
         lambda { |ctx|
@@ -194,10 +194,10 @@ Read/write methods for the standard data types.
                 if ctx.fld.trgType # map
                     mapsNotSupported(ctx.fld)
                 else  # list, set or deque
-                    "writeCollection(val.#{ctx.valGetter}, out, #{inOutableClassName(condenseType(ctx.fType.type, ctx.pckg))}.getInstance())"
+                    "writeCollection(val.#{ctx.valGetter}, out, #{inOutableClassName(DataMetaDom.condenseType(ctx.fType.type, ctx.pckg))}.getInstance())"
                 end
             else # scalar
-                "#{inOutableClassName(condenseType(ctx.fType.type, ctx.pckg))}.getInstance().write(out, val.#{ctx.valGetter})"
+                "#{inOutableClassName(DataMetaDom.condenseType(ctx.fType.type, ctx.pckg))}.getInstance().write(out, val.#{ctx.valGetter})"
             end
         }
     )

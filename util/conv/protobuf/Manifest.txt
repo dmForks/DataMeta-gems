@@ -1,0 +1,10 @@
+History.txt
+Manifest.txt
+PostInstall.txt
+README.rdoc
+Rakefile
+bin/dataMetaProtobufGen.rb
+tmpl/dataClass.proto.erb
+lib/dataMetaProtobuf.rb
+test/test_helper.rb
+test/test_dataMetaProtobuf.rb

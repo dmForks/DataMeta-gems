@@ -274,6 +274,6 @@ Python, for consistency.
 =end
     def setterName(f); "set#{DataMetaXtra::Str.capFirst(f.name.to_s)}" end
 
-    module_function :setterName, :getterName
+    module_function :setterName, :getterName, :condenseType
 
 end

@@ -197,7 +197,7 @@ Maximum size of a Mapping (Map), rather aribtrary choice, not backed by any big 
                 k = rawType.to_sym
                 srcType = PRIMS_TO_WRAP.has_key?(k) ? PRIMS_TO_WRAP[k] : rawType
                 typeRenderer = JAVA_TYPES[trg.type]
-                rawTrg = typeRenderer ? typeRenderer.call(trg) : condenseType(trg.type, javaPackage)
+                rawTrg = typeRenderer ? typeRenderer.call(trg) : DataMetaDom.condenseType(trg.type, javaPackage)
                 k = rawTrg.to_sym
                 trgType = PRIMS_TO_WRAP.has_key?(k) ? PRIMS_TO_WRAP[k] : rawTrg
                 "Map<#{srcType}, #{trgType}>"
@@ -449,7 +449,7 @@ FIELD_JAVADOC
 # Unaggregated Java type
     def unaggrJavaType(dt, javaPackage)
         typeRenderer = JAVA_TYPES[dt.type]
-        typeRenderer ? typeRenderer.call(dt) : condenseType(dt.type, javaPackage)
+        typeRenderer ? typeRenderer.call(dt) : DataMetaDom.condenseType(dt.type, javaPackage)
     end
 
 # aggregated Java type
@@ -478,7 +478,7 @@ All aggregation specifics are hhandled elsewhere (see genDataMetaSame)
                 # the name of the DataMetaSame implementor of the Field's type, assuming it is available during compile time
                 ftLsClassBase = "#{ftClassBase}#{suffix}"
                 # import the class if it belogns to a different package
-                imports << "#{combineNsBase(ftNs, ftLsClassBase)}" unless javaPackage == ftNs
+                imports << "#{DataMetaDom.combineNsBase(ftNs, ftLsClassBase)}" unless javaPackage == ftNs
                 %Q<#{ftLsClassBase}.I.isSame(#{one}, #{another})>
 
             when (f.isRequired && PRIMITIVABLE_TYPES.member?(dt.type)) || (enumType && enumType.kind_of?(DataMetaDom::Enum))
