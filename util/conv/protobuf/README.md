@@ -33,9 +33,7 @@ Since DataMeta DOM is superset of Protobuf data types, tradeoffs are made:
 
 Usage:
 
-Pipe your DataMeta DOM source to:
-
-    dataMetaProtobufGen.rb
+    dataMetaProtobufGen.rb <DataMeta DOM source file name>
 
 It will output your Protobuf IDL to STDOUT and write the log file named `dataMetaProtobuf.log` in which you may find
 some useful information about what just happened. This log is written into the current directory.
