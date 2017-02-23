@@ -36,7 +36,7 @@ module DataMetaXtra
             when WINDOWS
                 "#{ENV['HOMEDRIVE']}/#{ENV['HOMEPATH'].gsub(/\\/, '/')}"
             when CYGWIN
-                "#{ENV['HOME']}" # changed in latest versions of CygWin, now you get /cygdrive/c/Users/mubergens/
+                "#{ENV['HOME']}"
                 #"/cygdrive/#{ENV['HOMEDRIVE'][0, 1].downcase}#{ENV['HOMEPATH'].gsub(/\\/, '/')}"
             else # Linux, MacOS (verified)
                 "#{ENV['HOME']}"
