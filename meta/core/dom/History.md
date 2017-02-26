@@ -1,6 +1,10 @@
 
 # `dataMetaDom` Release history:
 
+## `1.0.3` - `2017-02-25 Sat` by [`mub`](https://github.com/mub)
+* Updates:
+    * Added new canned string validation pattern, `uuid`
+
 ## `1.0.2` - `2017-02-20 Mon` by [`mub`](https://github.com/mub)
 * Updates:
     * Fixed bug with the help STDOUT mixing up with STDERR output
