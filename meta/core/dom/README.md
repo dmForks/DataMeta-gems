@@ -6,9 +6,9 @@ The Core of the DataMeta platform, see the Features section below.
 
 See the [DataMeta home page](https://github.com/eBayDataMeta) and
 
-References to this gem's:
+References to this gem's source:
 
-* [Source](https://github.com/eBayDataMeta/DataMeta-gems)
+* [Source](https://github.com/eBayDataMeta/DataMeta-gems/tree/master/meta/core/dom)
 
 ## Features
 

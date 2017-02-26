@@ -170,7 +170,7 @@ Suffix for the java source files for the implementors of the DataMetaSame interf
     INDENT = ' ' * 4
 
 # keep in sync with generated classes such as the Java class `CannedRegexUtil` in DataMeta DOM Core/Java etc.
-    CANNED_RX = Set.new [:email, :phone]
+    CANNED_RX = Set.new [:email, :phone, :uuid, :UUID]
 
 # holds a custom regex symbol and the variables that use this regex
     class RegExEntry
