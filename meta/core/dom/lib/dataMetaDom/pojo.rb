@@ -744,7 +744,7 @@ Generates Java source code for the DataMeta DOM Mapping, DataMeta DOM keyword "<
       out.puts <<MAPPING_CLASS_HEADER
 package #{javaPackage};
 
-import org.ebay.datameta.core.Mapping;
+import org.ebay.datameta.dom.Mapping;
 #{importText}
 import java.util.Collection;
 import java.util.Collections;
@@ -809,11 +809,13 @@ Generates Java source code for the DataMeta DOM BitSet, DataMeta DOM keyword "<t
       maxBit = bitSet.keys.max
       raise "Mapping too big, size = #{maxBit}, max size #{MAX_MAPPING_SIZE}" if maxBit > MAX_MAPPING_SIZE
       out.puts <<BIT_SET_HEADER
-  package #{javaPackage};
+package #{javaPackage};
 
-  import org.ebay.datameta.core.BitSetImpl;
-  #{importTxt}
-  #{PojoLexer.classJavaDoc bitSet.docs}public final class #{baseName} extends BitSetImpl<#{toType}>{
+import org.ebay.datameta.dom.BitSetImpl;
+import org.ebay.datameta.util.jdk.SemanticVersion;
+
+#{importTxt}
+#{PojoLexer.classJavaDoc bitSet.docs}public final class #{baseName} extends BitSetImpl<#{toType}>{
     public static final int MAX_BIT = #{maxBit};
     public static final int COUNT = MAX_BIT + 1;
   // we do not expect huge arrays here, the sizes should be very limited and likely continuous.

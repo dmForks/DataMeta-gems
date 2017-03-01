@@ -1,5 +1,9 @@
 # `dataMetaByteSer` Release history:
 
+## `1.0.3` - `2017-02-28 Tue` by [`mub`](http://github.com/mub)
+* Update:
+    * Upgraded to the core version `1.0.1`
+    
 ## `1.0.2` - `2017-02-25 Sat` by [`mub`](https://github.com/mub)
 * Updates:
     * Upgraded the core to `1.0.3`
