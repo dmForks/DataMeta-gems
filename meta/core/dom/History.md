@@ -1,6 +1,10 @@
 
 # `dataMetaDom` Release history:
 
+## `1.0.4` - `2017-02-28 Tue` by [`mub`](https://github.com/mub)
+* Updates:
+    * Adjusted Mapping and Bitset generation target package
+    
 ## `1.0.3` - `2017-02-25 Sat` by [`mub`](https://github.com/mub)
 * Updates:
     * Added new canned string validation pattern, `uuid`

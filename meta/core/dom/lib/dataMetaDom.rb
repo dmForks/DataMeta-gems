@@ -25,7 +25,7 @@ For command line details either check the new method's source or the README.rdoc
 module DataMetaDom
 
 # Current version
-VERSION = '1.0.3'
+VERSION = '1.0.4'
 
 =begin rdoc
 Quick and dirty turning a Windows path into a path of the platform on which this script is running.
