@@ -42,7 +42,7 @@ Reverse references keyed by reference target names
 =begin
 Documentation for all options is in this section.
 
-* +autoNsVer+ - if set to True, advises a generator to append a +vN+ where +N+ is a version number to the namespace.
+* +autoVerNs+ - if set to True, advises a generator to append a +vN+ where +N+ is a version number to the namespace.
 =end
     attr_accessor :options
 # Version on the model level
