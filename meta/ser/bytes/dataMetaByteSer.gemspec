@@ -3,7 +3,7 @@ Gem::Specification.new do |s|
   s.name = 'dataMetaByteSer'
   s.has_rdoc = 'yard'
   s.version = DataMetaByteSer::VERSION
-  s.date = '2017-02-25'
+  s.date = '2017-04-04'
   s.summary = 'DataMeta Byte Array Serializers Gen'
   s.description = 'Generates serializers of DataMeta objects to/from byte arrays, which can be used with Hadoop, BigTable and beyond.'
   s.authors = ['Michael Bergens']
@@ -21,7 +21,7 @@ Gem::Specification.new do |s|
   s.homepage = 'https://github.com/eBayDataMeta'
   s.license = 'Apache-2.0'
 
-  s.add_dependency 'dataMetaDom', '~> 1.0', '>= 1.0.4'
+  s.add_dependency 'dataMetaDom', '~> 1.0', '>= 1.0.6'
   s.required_ruby_version = '>=2.1.1'
   s.requirements << 'Hadoop libraries'
   s.test_files = %w(test/test_dataMetaByteSer.rb)
