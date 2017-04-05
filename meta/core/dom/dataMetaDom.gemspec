@@ -3,7 +3,7 @@ Gem::Specification.new do |s|
     s.name = 'dataMetaDom'
     s.has_rdoc = 'yard'
     s.version = DataMetaDom::VERSION
-    s.date = '2017-01-15'
+    s.date = '2017-04-03'
     s.summary = 'DataMeta DOM'
     s.description = 'DataMeta DOM classes and runnables'
     s.authors = ['Michael Bergens']
