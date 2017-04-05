@@ -14,7 +14,7 @@ For command line details either check the new method's source or the README.rdoc
 =end
 module DataMetaByteSer
     # Current version
-    VERSION = '1.0.3'
+    VERSION = '1.0.4'
     include DataMetaDom, DataMetaDom::PojoLexer
 
 =begin rdoc

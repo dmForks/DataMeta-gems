@@ -8,7 +8,7 @@ DataMetaByteSer::helpDataMetaBytesSerGen(__FILE__, "Writables destination direct
 
 @parser = DataMetaDom::Model.new
 begin
-    @parser.parse(@source)
+    @parser.parse(@source, options={autoVerNs: true})
     DataMetaByteSer::genWritables(@parser, @target)
     puts "Byte Array serialization classes written to #{@target}. Done."
 rescue Exception => e
