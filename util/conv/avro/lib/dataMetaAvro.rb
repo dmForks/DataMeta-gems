@@ -17,7 +17,7 @@ For command line details either check the new method's source or the README, the
 
 module DataMetaAvro
     # Current version
-    VERSION = '1.0.0'
+    VERSION = '1.0.1'
 
     # The root of the gem.
     GEM_ROOT = File.realpath(File.dirname(__FILE__) + '/../')

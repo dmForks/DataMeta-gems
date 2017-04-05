@@ -17,7 +17,7 @@ For command line details either check the new method's source or the README, the
 
 module DataMetaProtobuf
     # Current version
-    VERSION = '1.0.1'
+    VERSION = '1.0.2'
 
 # First level indent
     INDENT = ' ' * 4

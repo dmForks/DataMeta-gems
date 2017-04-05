@@ -14,7 +14,7 @@ puts "Generating #{@source} into #{@target}"
 
 @parser = DataMetaDom::Model.new
 begin
-    @parser.parse(@source)
+    @parser.parse(@source, options={autoVerNs: true})
     DataMetaAvro::genSchema(@parser, @target)
 rescue Exception => e
    puts "ERROR #{e.message}; #{@parser.diagn}"
