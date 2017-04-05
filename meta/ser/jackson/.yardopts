@@ -1,0 +1,1 @@
+--title "DataMeta JSON (de)serialization with Jackson" -r README.md --charset UTF-8 lib/**/* - README.md

@@ -1,0 +1,9 @@
+History.txt
+Manifest.txt
+PostInstall.txt
+README.rdoc
+Rakefile
+bin/dataMetaJacksonSerGen.rb
+lib/dataMetaJacksonSer.rb
+test/test_helper.rb
+test/test_dataMetaJacksonSer.rb
