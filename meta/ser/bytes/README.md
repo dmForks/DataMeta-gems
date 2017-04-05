@@ -1,15 +1,15 @@
 # `dataMetaByteSer` gem
 
-Byte array (de)serialization generation from [DataMeta DOM](https://github.com/eBayDataMeta/DataMeta-gems) sources.
+Byte array (de)serialization generation from [DataMeta DOM](https://github.com/eBayDataMeta/DataMeta-gems/tree/master/meta/core/dom) sources.
 
 References to this gem's:
 
-* [Source](https://github.com/eBayDataMeta/DataMeta-gems)
+* [Source](https://github.com/eBayDataMeta/DataMeta-gems/tree/master/meta/ser/bytes)
 
 
 ## DESCRIPTION:
 
-See the [DataMeta Project](https://github.com/eBayDataMeta/DataMeta)
+See the [DataMeta Project Documentation Repository](https://github.com/eBayDataMeta/DataMeta)
 
 ## FEATURES:
 

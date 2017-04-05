@@ -12,7 +12,7 @@ DataMetaProtobuf.helpProtobufGen __FILE__, %<"#{@source}" is not a valid file> u
 
 @model = DataMetaDom::Model.new
 begin
-    @model.parse(@source)
+    @model.parse(@source, options={autoVerNs: true})
     puts DataMetaProtobuf.genSchema(@model)
 rescue Exception => e
    $stderr.puts "ERROR #{e.message}; #{@model.diagn}"

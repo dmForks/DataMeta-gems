@@ -25,7 +25,7 @@ For command line details either check the new method's source or the README.rdoc
 module DataMetaDom
 
 # Current version
-VERSION = '1.0.2'
+VERSION = '1.0.6'
 
 =begin rdoc
 Quick and dirty turning a Windows path into a path of the platform on which this script is running.
@@ -49,7 +49,7 @@ end
 
 # adjust the namespace if required
 def nsAdjustment(namespace, options, src)
-    src && options[:autoNsVer] ? "#{namespace}.v#{src.ver.full.toVarName}" : namespace
+    src && options[:autoVerNs] ? "#{namespace}.v#{src.ver.full.toVarName}" : namespace
 end
 
 =begin rdoc

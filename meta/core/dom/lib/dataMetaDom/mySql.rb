@@ -45,6 +45,14 @@ Not null (required) wording per MySQL DDL syntax
             },
             STRING => lambda { |len, isReq| "varchar(#{len})#{isReq ? NOT_NULL : ''}" },
             DATETIME => lambda { |len, isReq| "datetime#{isReq ? NOT_NULL : ''}" },
+            RAW => lambda { |len, isReq| "varbinary(#{len})#{isReq ? NOT_NULL : ''}" },
+
+            # Regarding the URL length:
+            # https://support.microsoft.com/en-us/help/208427/maximum-url-length-is-2,083-characters-in-internet-explorer
+            # https://tools.ietf.org/html/rfc7230#section-3.1.1
+            # http://www.faqs.org/rfcs/rfc2616.html
+            URL => lambda { |len, isReq| "varchar(2083)#{isReq ? NOT_NULL : ''}" },
+
             BOOL => lambda { |len, isReq| "bool#{isReq ? NOT_NULL : ''}" }
     }
 
@@ -206,15 +214,15 @@ Render SQL record with for the given model into the given output.
         }
         ids = record.identity ? record.identity.args : []
         createStatement = "create table #{entityName} (\n"
-        fieldKeys = [] << ids.map { |i| i.to_s }.sort.map { |i| i.to_sym } \
-   << record.fields.keys.select { |k| !ids.include?(k) }.map { |k| k.to_s }.sort.map { |k| k.to_sym }
+        fieldKeys = [] << ids.map { |i| i.to_s }.map { |i| i.to_sym } \
+   << record.fields.keys.select { |k| !ids.include?(k) }.map { |k| k.to_s }.map { |k| k.to_sym }
 
         fieldKeys.flatten.each { |f|
             renderField(createStatement, parser, record, f, isFirstField)
             isFirstField = false
         }
         if record.identity && record.identity.length > 0
-            createStatement << ",\n\tprimary key(#{ids.sort.join(', ')})"
+            createStatement << ",\n\tprimary key(#{ids.join(', ')})"
         end
         unless record.uniques.empty?
             uqNumber = 1

@@ -23,7 +23,7 @@ class TestNewGem < Test::Unit::TestCase
     # Smell-check the parsing
     def test_parsing
         model = DataMetaDom::Model.new
-        model.parse(File.join(File.dirname(__FILE__), 'sample.dmDom'), options={autoNsVer: true})
+        model.parse(File.join(File.dirname(__FILE__), 'sample.dmDom'), options={autoVerNs: true})
         L.info(%<Model: #{model}>)
         FileUtils.rmtree(GEN_TARGET) if File.exist?(GEN_TARGET)
         FileUtils.mkpath GEN_TARGET
