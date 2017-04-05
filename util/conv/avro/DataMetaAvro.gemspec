@@ -3,7 +3,7 @@ Gem::Specification.new do |s|
   s.name = 'dataMetaAvro'
   s.has_rdoc = 'yard'
   s.version = DataMetaAvro::VERSION
-  s.date = '2017-02-14'
+  s.date = '2017-04-04'
   s.summary = 'DataMeta Avro'
   s.description = 'DataMeta DOM to Avro schema generator'
   s.authors = ['Michael Bergens']
@@ -20,7 +20,7 @@ Gem::Specification.new do |s|
   s.homepage = 'https://github.com/eBayDataMeta'
   s.license = 'Apache-2.0'
 
-  s.add_dependency('dataMetaDom', '~> 1.0', '>= 1.0.1')
+  s.add_dependency('dataMetaDom', '~> 1.0', '>= 1.0.6')
   s.add_dependency('avro', '~> 1.8', '>= 1.8.1')
   s.required_ruby_version = '>=2.1.0'
   s.requirements << 'No special requirements'
