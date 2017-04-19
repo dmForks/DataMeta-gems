@@ -347,7 +347,7 @@ import org.ebay.datameta.dom.VerificationException;
 import org.ebay.datameta.util.jdk.SemanticVersion;
 import static org.ebay.datameta.dom.CannedRegexUtil.getCannedRegEx;
 
-#{PojoLexer.classJavaDoc record.docs}public class #{baseName} implements Verifiable {
+#{PojoLexer.classJavaDoc(record.docs)}public class #{baseName} implements Verifiable {
 
 ENTITY_CLASS_HEADER
 if record.ver
