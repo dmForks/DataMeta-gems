@@ -6,15 +6,13 @@ require 'set'
 require 'dataMetaJacksonSer/util'
 
 =begin rdoc
-Serialization artifacts generation such as Hadoop Writables etc.
-
-TODO this isn't a bad way, but beter use templating next time such as {ERB}[http://ruby-doc.org/stdlib-1.9.3/libdoc/erb/rdoc/ERB.html].
+JSON Serialization artifacts generation.
 
 For command line details either check the new method's source or the README.rdoc file, the usage section.
 =end
 module DataMetaJacksonSer
     # Current version
-    VERSION = '1.0.0'
+    VERSION = '2.0.0'
     include DataMetaDom, DataMetaDom::PojoLexer
 
 =begin rdoc
@@ -271,11 +269,13 @@ Read/write methods for the DataMeta DOM Maps, accidentally all the same as for t
       ctx.fld = f
       rwRenderer = getRwRenderer(ctx)
 #      unless ctx.refType.kind_of?(DataMetaDom::Record)
+
       reads <<  %/
 #{indent*5}case "#{f.name}" =>
-#{indent*6}value.#{DataMetaDom.setterName(ctx.fld)}(#{rwRenderer.r.call(ctx)})
+#{indent*6}target.#{DataMetaDom.setterName(ctx.fld)}(#{rwRenderer.r.call(ctx)})
 /
-# rendering of noReqFld - using the Veryfiable interface instead
+
+# rendering of noReqFld - using the Verifiable interface instead
 #=begin
       writes << ( "\n" + (indent*2) + (f.isRequired ?
                 (PRIMITIVABLE_TYPES.member?(f.dataType.type) ? '' : ''):
@@ -299,22 +299,22 @@ import com.fasterxml.jackson.core.JsonToken.{END_ARRAY, END_OBJECT}
 #{writes}
   }
 
-  override def read(in: JsonParser, value: #{baseName}): #{baseName} = {
+  override def readInto(in: JsonParser, target: #{baseName}, ignoreUnknown: Boolean = true): #{baseName} = {
     while(in.nextToken() != END_OBJECT) {
       val fldName = in.getCurrentName
       if(fldName != null) {
         in.nextToken()
         fldName match {
 #{reads}
-          case _ => throw new IllegalArgumentException(s"""Unhandled field "$fldName" """)
+          case _ => if(!ignoreUnknown) throw new IllegalArgumentException(s"""Unhandled field "$fldName" """)
         }
       }
     }
-    value
+    target
   }
 
-  override def read(in: JsonParser): #{baseName} = {
-    read(in, new #{baseName}())
+  override def read(in: JsonParser, ignoreUnknown: Boolean = true): #{baseName} = {
+    readInto(in, new #{baseName}(), ignoreUnknown)
   }
 }
 JSONABLE_CLASS
