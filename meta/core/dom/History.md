@@ -1,6 +1,10 @@
 
 # `dataMetaDom` Release history:
 
+## `1.0.7` - `2017-04-17 Mon` by [`mub`](https://github.com/mub)
+* New feature
+    * Scala Case Classes generation
+    
 ## `1.0.6` - `2017-04-03 Mon` by [`mub`](https://github.com/mub)
 * Bug fix:
     * Pojo Generator had autoversion parameter misspelled.

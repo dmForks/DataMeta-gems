@@ -28,6 +28,11 @@ def helpPojoGen(file, errorText=nil)
     help(file, 'POJO generator', '<DataMeta DOM source> <target directory>', errorText)
 end
 
+# Shortcut to help for the Pojo Generator.
+def helpScalaGen(file, errorText=nil)
+    help(file, 'Scala generator', '<DataMeta DOM source> <target directory>', errorText)
+end
+
 # Shortcut to help for the MySQL DDL Generator.
 def helpMySqlDdl(file, errorText=nil)
     help(file, 'MySQL DDL generator', '<DataMeta DOM source> <target directory>', errorText)
@@ -38,5 +43,5 @@ def helpOracleDdl(file, errorText=nil)
     help(file, 'Oracle DDL generator', '<DataMeta DOM source> <target directory>', errorText)
 end
 
-module_function :help, :helpPojoGen, :helpMySqlDdl
+module_function :help, :helpPojoGen, :helpMySqlDdl, :helpScalaGen
 end
