@@ -40,9 +40,19 @@ Generates Versioned Read switch that channels the read to the proper migration s
         javaClassName = "Read__Switch_v#{ver1.toVarName}_to_v#{ver2.toVarName}"
         destDir = File.join(outRoot, packagePath)
         FileUtils.mkdir_p destDir
-        IO::write(File.join(destDir, "#{javaClassName}.java"),
-                  ERB.new(IO.read(File.join(File.dirname(__FILE__), '../../tmpl/readSwitch.erb')),
-                          $SAFE, '%<>').result(binding), mode: 'wb')
+        javaDestFile = File.join(destDir, "#{javaClassName}.java")
+
+        skippedCount = 0
+        if File.file?(javaDestFile)
+            skippedCount += 1
+            $stderr.puts %<Read switch target "#{javaDestFile} present, therefore skipped">
+        else
+            IO::write(javaDestFile,
+                      ERB.new(IO.read(File.join(File.dirname(__FILE__), '../../tmpl/readSwitch.erb')),
+                              $SAFE, '%<>').result(binding), mode: 'wb')
+        end
+
+        $stderr.puts %<Read Switch targets skipped: #{skippedCount}> if skippedCount > 0
     end
     module_function :genVerReadSwitch
 end
