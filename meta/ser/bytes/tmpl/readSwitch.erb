@@ -29,7 +29,7 @@ public class <%=javaClassName%> {
         if(ver.equals(<%=vars.baseName%>.VERSION)) {
                 return <%=vars.baseName%>_InOutable.getInstance().read(in);
 <%
-  while vars.versCases.length > 1 # loop through the case statement - a version per each
+  while vars.versCases.length > 0 # loop through the case statement - a version per each
   vars.switchTargVer = vars.versCases.shift
   vars.brackets = ''
   caseObjName = flipVer(trgE.name, ver2.toVarName, vars.switchTargVer.toVarName)
@@ -38,7 +38,7 @@ public class <%=javaClassName%> {
 %>
        }
        else if(ver.equals(<%=caseObjName%>.VERSION)){<% vars.versMigr =  vers.clone.select{|v| v <= ver2}.sort{|x, y| y<=>x}%>
-                return <%  while vars.versMigr.length > 1 # migration steps loop nested in the case statement loop
+                return <%  while vars.versMigr.length > 0 # migration steps loop nested in the case statement loop
       vars.brackets << ')'
       vars.migrTargVer = vars.versMigr.shift # target version for migration loop
       vars.srcVer = vars.versMigr[0]

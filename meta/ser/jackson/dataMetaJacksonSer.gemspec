@@ -3,7 +3,7 @@ Gem::Specification.new do |s|
   s.name = 'dataMetaJacksonSer'
   s.has_rdoc = 'yard'
   s.version = DataMetaJacksonSer::VERSION
-  s.date = '2017-03-31'
+  s.date = '2017-04-18'
   s.summary = 'DataMeta JSON Serializers Gen using Fast XML Jackson'
   s.description = 'Generates serializers of DataMeta objects to/from JSON using Fast XML Jackson'
   s.authors = ['Michael Bergens']

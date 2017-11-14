@@ -3,7 +3,7 @@ Gem::Specification.new do |s|
     s.name = 'dataMetaDom'
     s.has_rdoc = 'yard'
     s.version = DataMetaDom::VERSION
-    s.date = '2017-04-03'
+    s.date = '2017-04-17'
     s.summary = 'DataMeta DOM'
     s.description = 'DataMeta DOM classes and runnables'
     s.authors = ['Michael Bergens']
@@ -34,6 +34,7 @@ Gem::Specification.new do |s|
     #s.requirements << 'A powerful CPU'
     s.test_files = 'test/test_dataMetaDom.rb'
     s.executables = %w(dataMetaPojo.rb dataMetaMySqlDdl.rb dataMetaSameFullJ.rb
-                       dataMetaSameIdJ.rb dataMetaGvExport.rb dataMetaOracleDdl.rb dataMetaReVersion.rb)
+                       dataMetaSameIdJ.rb dataMetaGvExport.rb dataMetaOracleDdl.rb dataMetaReVersion.rb
+                       dataMetaGenScalaCases.rb)
     s.default_executable = s.executables[0]
 end

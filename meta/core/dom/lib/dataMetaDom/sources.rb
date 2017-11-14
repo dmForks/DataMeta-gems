@@ -11,17 +11,18 @@ For command line details either check the new method's source or the README.rdoc
 =end
 class Sources
 
+    attr_reader :masterPath
 =begin rdoc
 Start parsing from the master file, collect all the files that are included.
 =end
     def initialize(masterFile)
-        masterPath = File.dirname(masterFile)
+        @masterPath = File.dirname(masterFile)
         @todo = {}; @done = {}
         libSpec = ENV[DATAMETA_LIB]
         @paths = libSpec ? libSpec.split(File::PATH_SEPARATOR).map { |e| uniPath(e) } : []
-        @paths.unshift(masterPath).flatten! if masterPath
+        @paths.unshift(@masterPath).flatten! if @masterPath
         @paths.unshift '.' # start looking in the current directory and then in the rest of the path
-        src = SourceFile.new(masterPath, File.basename(masterFile))
+        src = SourceFile.new(@masterPath, File.basename(masterFile))
         @todo[src.key] = src
     end
 
