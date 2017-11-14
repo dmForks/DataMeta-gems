@@ -971,22 +971,23 @@ Generates migration guides from the given model to the given model
         }
         noAutos = ctxs.reject{|c| c.canAuto}
         skipped = ctxs.select{|c| c.isSkipped}
-        unless skipped.empty?
-            $stderr.puts %<Skipped: #{skipped.size}>
-        end
+
+        $stderr.puts %<Migration targets skipped: #{skipped.size}> unless skipped.empty?
+
         unless noAutos.empty?
             $stderr.puts %<#{noAutos.size} class#{noAutos.size > 1 ? 'es' : ''} out of #{ctxs.size} can not be migrated automatically:
 #{noAutos.map{|c| c.rec}.sort.join("\n")}
 Please edit the Migrate_ code for #{noAutos.size > 1 ? 'these' : 'this one'} manually.
 >
         end
-        unless droppedRecs.empty?
 
+        unless droppedRecs.empty?
             $stderr.puts %<#{droppedRecs.size} class#{droppedRecs.size > 1 ? 'es were' : ' was'} dropped from your model:
 #{droppedRecs.sort.join("\n")}
 -- you may want to review if #{droppedRecs.size > 1 ? 'these were' : 'this one was'} properly handled.
 >
         end
+
         unless addedRecs.empty?
             $stderr.puts %<#{addedRecs.size} class#{addedRecs.size > 1 ? 'es were' : ' was'} added to your model:
 #{addedRecs.sort.join("\n")}

@@ -1,5 +1,9 @@
 # `dataMetaByteSer` Release history:
 
+## `1.0.5` - `2017-05-27 Sat` by [`mub`](http://github.com/mub)
+* Update:
+    * Altered the Read Switch generator code to keep existing files.
+    
 ## `1.0.4` - `2017-04-04 Tue` by [`mub`](http://github.com/mub)
 * Update:
     * Upgraded to the core version `1.0.6`
