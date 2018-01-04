@@ -29,11 +29,11 @@ Builds a class name for a InOutable.
     end
 
     def mapsNotSupported(fld)
-        raise ArgumentError, "Field #{fld.name}: maps are not currently supported on Hadoop layer"
+        raise ArgumentError, "Field #{fld.name}: maps are not currently supported for Byte Array format"
     end
 
     def aggrNotSupported(fld, forWhat)
-        raise ArgumentError, "Field #{fld.name}: aggregate types are not supported for #{forWhat} on Hadoop layer"
+        raise ArgumentError, "Field #{fld.name}: aggregate types are not supported for #{forWhat} for Byte Array format"
     end
 
 =begin rdoc

@@ -1,7 +1,9 @@
 $:.unshift(File.dirname(__FILE__)) unless $:.include?(File.dirname(__FILE__)) || $:.include?(File.expand_path(File.dirname(__FILE__)))
 
 # Definition for generating Plain Old Java Objects (POJOs)
-%w(fileutils dataMetaDom dataMetaDom/pojo dataMetaDom/enum dataMetaDom/record dataMetaDom/help dataMetaDom/util).each(&method(:require))
+%w(fileutils dataMetaDom dataMetaDom/pojo dataMetaDom/enum dataMetaDom/record dataMetaDom/help dataMetaDom/util
+    ).each(&method(:require))
+
 require 'set'
 require 'dataMetaJacksonSer/util'
 
@@ -12,7 +14,7 @@ For command line details either check the new method's source or the README.rdoc
 =end
 module DataMetaJacksonSer
     # Current version
-    VERSION = '2.0.0'
+    VERSION = '2.0.1'
     include DataMetaDom, DataMetaDom::PojoLexer
 
 =begin rdoc
@@ -20,10 +22,10 @@ HDFS Reader and Writer for textual Java types such as String.
 =end
     TEXT_RW_METHODS = RwHolder.new(
             lambda{|ctx|
-                ctx.fld.aggr ? ctx.rw.call("read#{aggrBaseName(aggrJavaFull(ctx.fld.aggr))}String(in)") : ctx.rw.call('readText(in)')
+                ctx.fld.aggr ? ctx.rw.call("read#{aggrBaseName(aggrJavaFull(ctx.fld.aggr))}String(in)") : ctx.rw.call('JU.readText(in)')
             },
             lambda{|ctx|
-                 ctx.fld.aggr ? "write#{aggrBaseName(aggrJavaFull(ctx.fld.aggr))}String(\"#{ctx.fld.name}\", out, value.#{ctx.valGetter})" : "out.writeStringField(\"#{ctx.fld.name}\", value.#{ctx.valGetter})"
+                 ctx.fld.aggr ? "write#{aggrBaseName(aggrJavaFull(ctx.fld.aggr))}String(\"#{ctx.fld.name}\", out, value.#{ctx.valGetter}#{ctx.|})" : "out.writeStringField(\"#{ctx.fld.name}\", value.#{ctx.valGetter}#{ctx.|})"
             }
     )
 
@@ -34,23 +36,23 @@ HDFS Reader and Writer for integral Java types such as Integer or Long.
                 lambda{ |ctx|
                     mapsNotSupported(ctx.fld) if ctx.fld.trgType # map
                     case
-                        when ctx.fType.length <= 4; ctx.fld.aggr ? ctx.rw.call("read#{aggrBaseName(aggrJavaFull(ctx.fld.aggr))}Integer(in)") :
-                                ctx.rw.call('in.getIntValue')
+                        when ctx.fType.length <= 4; ctx.fld.aggr ? ctx.rw.call("JU.read#{aggrBaseName(aggrJavaFull(ctx.fld.aggr))}Integer(in)") :
+                                ctx.rw.call("in.getIntValue#{ctx.|}")
 
-                        when ctx.fType.length <= 8; ; ctx.fld.aggr ? ctx.rw.call("read#{aggrBaseName(aggrJavaFull(ctx.fld.aggr))}Long(in)") : ctx.rw.call('in.getLongValue')
+                        when ctx.fType.length <= 8; ; ctx.fld.aggr ? ctx.rw.call("JU.read#{aggrBaseName(aggrJavaFull(ctx.fld.aggr))}Long(in)") : ctx.rw.call("in.getLongValue#{ctx.|}")
 
                         else; raise "Invalid integer field #{ctx.fld}"
                     end
                   },
                 lambda{ |ctx|
                   case
-                      when ctx.fType.length <= 4; ctx.fld.aggr ? "write#{aggrBaseName(aggrJavaFull(ctx.fld.aggr))
-                        }Integer(\"#{ctx.fld.name}\", out, value.#{ctx.valGetter})" :
-                        "out.writeNumberField(\"#{ctx.fld.name}\", value.#{ctx.valGetter})"
+                      when ctx.fType.length <= 4; ctx.fld.aggr ? "JU.write#{aggrBaseName(aggrJavaFull(ctx.fld.aggr))
+                        }Integer(\"#{ctx.fld.name}\", out, value.#{ctx.valGetter}#{ctx.|})" :
+                        "out.writeNumberField(\"#{ctx.fld.name}\", value.#{ctx.valGetter}#{ctx.|})"
 
-                      when ctx.fType.length <= 8;  ctx.fld.aggr ? "write#{aggrBaseName(aggrJavaFull(ctx.fld.aggr))
-                        }Long(\"#{ctx.fld.name}\", out, value.#{ctx.valGetter})" :
-                        "out.writeNumberField(\"#{ctx.fld.name}\", value.#{ctx.valGetter})"
+                      when ctx.fType.length <= 8;  ctx.fld.aggr ? "JU.write#{aggrBaseName(aggrJavaFull(ctx.fld.aggr))
+                        }Long(\"#{ctx.fld.name}\", out, value.#{ctx.valGetter}#{ctx.|})" :
+                        "out.writeNumberField(\"#{ctx.fld.name}\", value.#{ctx.valGetter}#{ctx.|})"
 
                       else; raise "Invalid integer field #{ctx.fld}"
                   end
@@ -63,15 +65,15 @@ HDFS Reader and Writer for floating point Java types such as Float or Double.
                 lambda{|ctx|
                     mapsNotSupported(ctx.fld) if ctx.fld.trgType # map
                     case
-                      when ctx.fType.length <= 4; ctx.fld.aggr ? ctx.rw.call("read#{aggrBaseName(aggrJavaFull(ctx.fld.aggr))}Float(in)") : ctx.rw.call('in.getFloatValue()')
-                      when ctx.fType.length <= 8; ctx.fld.aggr ? ctx.rw.call("read#{aggrBaseName(aggrJavaFull(ctx.fld.aggr))}Double(in)") : ctx.rw.call('in.getDoubleValue()')
+                      when ctx.fType.length <= 4; ctx.fld.aggr ? ctx.rw.call("JU.read#{aggrBaseName(aggrJavaFull(ctx.fld.aggr))}Float(in)") : ctx.rw.call('in.getFloatValue()')
+                      when ctx.fType.length <= 8; ctx.fld.aggr ? ctx.rw.call("JU.read#{aggrBaseName(aggrJavaFull(ctx.fld.aggr))}Double(in)") : ctx.rw.call('in.getDoubleValue()')
                       else; raise "Invalid float field #{ctx.fld}"
                     end
                   },
                 lambda{|ctx|
                     case
-                      when ctx.fType.length <= 4; ctx.fld.aggr ? "write#{aggrBaseName(aggrJavaFull(ctx.fld.aggr))}Float(out, value.#{ctx.valGetter})" : "out.writeNumberField(\"#{ctx.fld.name}\", value.#{ctx.valGetter})"
-                      when ctx.fType.length <= 8; ctx.fld.aggr ? "write#{aggrBaseName(aggrJavaFull(ctx.fld.aggr))}Double(out, value.#{ctx.valGetter})" : "out.writeNumberField(\"#{ctx.fld.name}\", value.#{ctx.valGetter})"
+                      when ctx.fType.length <= 4; ctx.fld.aggr ? "JU.write#{aggrBaseName(aggrJavaFull(ctx.fld.aggr))}Float(out, value.#{ctx.valGetter}#{ctx.|})" : "out.writeNumberField(\"#{ctx.fld.name}\", value.#{ctx.valGetter}#{ctx.|})"
+                      when ctx.fType.length <= 8; ctx.fld.aggr ? "JU.write#{aggrBaseName(aggrJavaFull(ctx.fld.aggr))}Double(out, value.#{ctx.valGetter}#{ctx.|})" : "out.writeNumberField(\"#{ctx.fld.name}\", value.#{ctx.valGetter}#{ctx.|})"
                       else; raise "Invalid float field #{ctx.fld}"
                     end
               })
@@ -81,11 +83,11 @@ HDFS Reader and Writer for the temporal type, the DateTime
 =end
     DTTM_RW_METHODS = RwHolder.new(
             lambda { |ctx|
-                ctx.fld.aggr ? ctx.rw.call("read#{aggrBaseName(aggrJavaFull(ctx.fld.aggr))}ZonedDateTime(in)") : ctx.rw.call('readDttm(in)')
+                ctx.fld.aggr ? ctx.rw.call("JU.read#{aggrBaseName(aggrJavaFull(ctx.fld.aggr))}ZonedDateTime(in)") : ctx.rw.call('JU.readDttm(in)')
             },
             lambda { |ctx|
-                 ctx.fld.aggr ? %<write#{aggrBaseName(aggrJavaFull(ctx.fld.aggr))}ZonedDateTime("#{
-                    ctx.fld.name}", out, value.#{ctx.valGetter})> : "writeDttmFld(\"#{ctx.fld.name}\", out, value.#{ctx.valGetter})"
+                 ctx.fld.aggr ? %<JU.write#{aggrBaseName(aggrJavaFull(ctx.fld.aggr))}ZonedDateTime("#{
+                    ctx.fld.name}", out, value.#{ctx.valGetter}#{ctx.|})> : "JU.writeDttmFld(\"#{ctx.fld.name}\", out, value.#{ctx.valGetter}#{ctx.|})"
             }
     )
 
@@ -99,7 +101,7 @@ HDFS Reader and Writer for boolean Java type.
             },
             lambda { |ctx|
                 aggrNotSupported(ctx.fld, 'Booleans') if ctx.fld.aggr
-                "out.writeBooleanField(\"#{ctx.fld.name}\", value.#{ctx.valGetter})"
+                "out.writeBooleanField(\"#{ctx.fld.name}\", value.#{ctx.valGetter}#{ctx.|})"
             }
     )
 
@@ -109,18 +111,18 @@ HDFS Reader and Writer the raw data type, the byte array.
     RAW_RW_METHODS = RwHolder.new(
             lambda { |ctx|
                 aggrNotSupported(ctx.fld, 'Raw Data') if ctx.fld.aggr
-                ctx.rw.call('readByteArray(in)')
+                ctx.rw.call('JU.readByteArrayPrim(in)')
             },
             lambda { |ctx|
                 aggrNotSupported(ctx.fld, 'Raw Data') if ctx.fld.aggr
-                "writeByteArrayFld(\"#{ctx.fld.name}\", out, value.#{ctx.valGetter})" }
+                "JU.writeByteArrayFld(\"#{ctx.fld.name}\", out, value.#{ctx.valGetter}#{ctx.|})" }
     )
 
 =begin rdoc
 HDFS Reader and Writer the variable size Decimal data type.
 =end
-    NUMERIC_RW_METHODS = RwHolder.new(lambda{|ctx| ctx.fld.aggr ? ctx.rw.call("read#{aggrBaseName(aggrJavaFull(ctx.fld.aggr))}BigDecimal(in)") : ctx.rw.call('readBigDecimal(in)')},
-                                      lambda{|ctx| "out.writeNumberField(\"#{ctx.fld.name}\", value.#{ctx.valGetter})"})
+    NUMERIC_RW_METHODS = RwHolder.new(lambda{|ctx| ctx.fld.aggr ? ctx.rw.call("JU.read#{aggrBaseName(aggrJavaFull(ctx.fld.aggr))}BigDecimal(in)") : ctx.rw.call('JU.readBigDecimal(in)')},
+                                      lambda{|ctx| "out.writeNumberField(\"#{ctx.fld.name}\", value.#{ctx.valGetter}#{ctx.|})"})
 
 =begin rdoc
 HDFS Reader and Writer the Java Enums.
@@ -128,11 +130,11 @@ HDFS Reader and Writer the Java Enums.
     ENUM_RW_METHODS = RwHolder.new(
           lambda{|ctx|
             aggrNotSupported(ctx.fld, 'Enums') if ctx.fld.aggr
-            "#{DataMetaDom.condenseType(ctx.fType.type, ctx.pckg)}.forName(readText(in))"
+            "Enum.valueOf(#{DataMetaDom.condenseType(ctx.fType.type, ctx.pckg)}.class, JU.readText(in))"
           },
           lambda { |ctx|
             aggrNotSupported(ctx.fld, 'Enums') if ctx.fld.aggr
-            "out.writeStringField(\"#{ctx.fld.name}\", value.#{ctx.valGetter}.name())"
+            "out.writeStringField(\"#{ctx.fld.name}\", value.#{ctx.valGetter}#{ctx.|}.name())"
           }
     )
 
@@ -146,7 +148,7 @@ HDFS Reader and Writer the BitSet.
           },
           lambda { |ctx|
             aggrNotSupported(ctx.fld, 'BitSets') if ctx.fld.aggr
-            "writeBitSetFld(\"#{ctx.fld.name}\", out, value.#{ctx.valGetter})"
+            "writeBitSetFld(\"#{ctx.fld.name}\", out, value.#{ctx.valGetter}#{ctx.|})"
           }
     )
 
@@ -156,11 +158,11 @@ HDFS Reader and Writer the URL.
     URL_RW_METHODS = RwHolder.new(
             lambda { |ctx|
                 aggrNotSupported(ctx.fld, 'URLs') if ctx.fld.aggr
-                'new java.net.URL(readText(in))'
+                'new java.net.URL(in.getText())'
             },
             lambda { |ctx|
                 aggrNotSupported(ctx.fld, 'URLs') if ctx.fld.aggr
-                "out.writeStringField(\"#{ctx.fld.name}\", value.#{ctx.valGetter}.toExternalForm)"
+                "out.writeStringField(\"#{ctx.fld.name}\", value.#{ctx.valGetter}#{ctx.|}.toExternalForm())"
             }
     )
 =begin rdoc
@@ -184,11 +186,11 @@ Read/write methods for the standard data types.
                 if ctx.fld.trgType # map
                     mapsNotSupported(ctx.fld)
                 else  # list, set or deque
-                    "read#{aggrBaseName(aggrJavaFull(ctx.fld.aggr))}(in, #{
-                        jsonableClassName(DataMetaDom.condenseType(ctx.fType.type, ctx.pckg))})"
+                    "JU.read#{aggrBaseName(aggrJavaFull(ctx.fld.aggr))}(in, #{
+                        jsonableClassName(DataMetaDom.condenseType(ctx.fType.type, ctx.pckg))}.getInstance())"
                 end
             else # scalar
-                "#{jsonableClassName(DataMetaDom.condenseType(ctx.fType.type, ctx.pckg))}.read(in)"
+                "#{jsonableClassName(DataMetaDom.condenseType(ctx.fType.type, ctx.pckg))}.getInstance().read(in)"
             end
         },
         lambda { |ctx|
@@ -196,10 +198,10 @@ Read/write methods for the standard data types.
                 if ctx.fld.trgType # map
                     mapsNotSupported(ctx.fld)
                 else  # list, set or deque
-                    "writeCollectionFld(\"#{ctx.fld.name}\", out, value.#{ctx.valGetter}, #{jsonableClassName(DataMetaDom.condenseType(ctx.fType.type, ctx.pckg))})"
+                    "JU.writeCollectionFld(\"#{ctx.fld.name}\", out, value.#{ctx.valGetter}#{ctx.|}, #{jsonableClassName(DataMetaDom.condenseType(ctx.fType.type, ctx.pckg))}.getInstance())"
                 end
             else # scalar
-                "#{jsonableClassName(DataMetaDom.condenseType(ctx.fType.type, ctx.pckg))}.writeField(\"#{ctx.fld.name}\", out, value.#{ctx.valGetter})"
+                "#{jsonableClassName(DataMetaDom.condenseType(ctx.fType.type, ctx.pckg))}.getInstance().writeField(\"#{ctx.fld.name}\", out, value.#{ctx.valGetter}#{ctx.|})"
             end
         }
     )
@@ -244,8 +246,9 @@ Read/write methods for the DataMeta DOM Maps, accidentally all the same as for t
 # Temporary/scratch var -- avoiding collisions at all costs
     def tmpVar(name); "#{'_'*3}#{name}#{'_'*3}" end
 
-  # generates writable via delegation
-  def genJacksonable(model, ioOut, record, javaPackage, baseName)
+  # generates Scala JSONable via delegation
+  def genJacksonable(model, ioOut, record, javaPackage, baseName, fmt = :scala)
+    assertOutFmt fmt
     ctx = RendCtx.new.init(model, record, javaPackage, baseName)
     fields = record.fields
     ioName = jsonableClassName(baseName)
@@ -270,21 +273,43 @@ Read/write methods for the DataMeta DOM Maps, accidentally all the same as for t
       rwRenderer = getRwRenderer(ctx)
 #      unless ctx.refType.kind_of?(DataMetaDom::Record)
 
-      reads <<  %/
-#{indent*5}case "#{f.name}" =>
+      reads << case fmt
+        when SCALA_FMT
+          %/
+          #{indent*5}case "#{f.name}" =>
 #{indent*6}target.#{DataMetaDom.setterName(ctx.fld)}(#{rwRenderer.r.call(ctx)})
 /
+        when JAVA_FMT
+          %/
+#{indent*6}case "#{f.name}":
+#{indent*7}target.#{DataMetaDom.setterName(ctx.fld)}(#{rwRenderer.r.call(ctx)});
+#{indent*7}break;
+/
+        else
+          badFmt fmt
+      end
 
 # rendering of noReqFld - using the Verifiable interface instead
 #=begin
-      writes << ( "\n" + (indent*2) + (f.isRequired ?
+      writes  << case fmt
+        when SCALA_FMT
+           "\n" + (indent*2) + (f.isRequired ?
                 (PRIMITIVABLE_TYPES.member?(f.dataType.type) ? '' : ''):
 #%Q<if(value.#{DataMetaDom::PojoLexer::getterName(ctx.fld)}() == null) throw noReqFld("#{f.name}"); >) :
-                "if(value.#{DataMetaDom.getterName(ctx.fld)} != null) ") + "#{rwRenderer.w.call(ctx)}")
+                "if(value.#{DataMetaDom.getterName(ctx.fld)} != null) ") + "#{rwRenderer.w.call(ctx)}"
 #=end
-#      end
+        when JAVA_FMT
+          "\n" + (indent*2) + (f.isRequired ?
+              (PRIMITIVABLE_TYPES.member?(f.dataType.type) ? '' : ''):
+              "if(value.#{DataMetaDom.getterName(ctx.fld)}#{ctx.|} != null) ") + "#{rwRenderer.w.call(ctx)};"
+        else
+          badFmt fmt
+      end
     }
-    ioOut.puts <<JSONABLE_CLASS
+
+    ioOut.puts case fmt
+      when SCALA_FMT
+          %^
 package #{javaPackage}
 
 import org.ebay.datameta.ser.jackson.fasterxml.JacksonUtil._
@@ -317,7 +342,77 @@ import com.fasterxml.jackson.core.JsonToken.{END_ARRAY, END_OBJECT}
     readInto(in, new #{baseName}(), ignoreUnknown)
   }
 }
-JSONABLE_CLASS
+^
+      when JAVA_FMT
+                          %^
+package #{javaPackage};
+
+import static org.ebay.datameta.ser.jackson.fasterxml.JacksonUtil.*;
+import org.ebay.datameta.ser.jackson.fasterxml.JacksonUtil;
+import org.ebay.datameta.ser.jackson.fasterxml.Jsonable;
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonToken;
+
+import java.io.IOException;
+
+import static com.fasterxml.jackson.core.JsonToken.END_ARRAY;
+import static com.fasterxml.jackson.core.JsonToken.END_OBJECT;
+
+/**
+ * Json Serializer/Deserializer for the type {@link #{baseName}}.
+ * This class is completely immutable, state-free and therefore thread-safe, implemented and used as a singleton.
+ */
+#{DataMetaDom::PojoLexer.classJavaDoc({})}public class #{ioName} extends Jsonable<#{baseName}> {
+
+  /** An instance of the {@link JacksonUtil} - can use it anywhere because {@link JacksonUtil} is a singleton,
+   * immutable and state-free.
+   */
+  public final static JacksonUtil JU = JacksonUtil.getInstance();
+
+  public static #{ioName} getInstance() { return INSTANCE; }
+
+  private final static #{ioName} INSTANCE = new #{ioName}();
+
+  /**
+   * Constructor is private - use {@link #getInstance()} to get an instance.
+   */
+  private #{ioName}() {}
+
+  public void write(final JsonGenerator out, final #{baseName} value) throws IOException {
+    value.verify();
+#{writes}
+  }
+
+  public #{baseName} readInto(final JsonParser in, final #{baseName} target, final boolean ignoreUnknown) throws IOException {
+    JsonToken t = null;
+    while ( (t = in.nextToken()) != END_OBJECT) {
+      if(t == null) throw new IllegalArgumentException("NULL token at " + in.getParsingContext());
+      final String fldName = in.getCurrentName();
+      if(fldName != null) {
+        in.nextToken();
+        switch(fldName){
+            case "#{VER_KEY}": break; // skip the version field
+            case "#{DT_KEY}": break;  // skip the data type field
+#{reads}
+          default:
+            if(!ignoreUnknown) throw new IllegalArgumentException("Unhandled field \\"" + fldName + '\\"');
+        }
+      }
+    }
+    return target;
+  }
+
+  public #{baseName} read(final JsonParser in, boolean ignoreUnknown) throws IOException {
+    return readInto(in, new #{baseName}(), ignoreUnknown);
+  }
+}
+^
+                      else
+                          badFmt fmt
+
+end
 
   end
 
@@ -327,16 +422,17 @@ Parameters:
 * +model+ - the model to generate Writables from.
 * +outRoot+ - destination directory name.
 =end
-    def genJacksonables(model, outRoot)
+    def genJacksonables(model, outRoot, fmt = :scala)
+      assertOutFmt fmt
       model.records.values.each { |e|
         javaPackage, base, packagePath = DataMetaDom::PojoLexer::assertNamespace(e.name)
         destDir = File.join(outRoot, packagePath)
         FileUtils.mkdir_p destDir
-        ioOut = File.open(File.join(destDir, "#{jsonableClassName(base)}.scala"), 'wb')
+        ioOut = File.open(File.join(destDir, "#{jsonableClassName(base)}.#{fmt}"), 'wb')
         begin
           case
             when e.kind_of?(DataMetaDom::Record)
-              genJacksonable model, ioOut, e, javaPackage, base
+              genJacksonable model, ioOut, e, javaPackage, base, fmt
             else
               raise "Unsupported Entity: #{e.inspect}"
           end
@@ -348,7 +444,7 @@ Parameters:
 
     # Shortcut to help for the Hadoop Writables generator.
     def helpDataMetaJacksonSerGen(file, errorText=nil)
-        DataMetaDom::help(file, 'DataMeta Serialization to/from Jackson', '<DataMeta DOM source> <Target Directory>', errorText)
+        DataMetaDom::help(file, 'DataMeta Serialization to/from Jackson', '<DataMeta DOM source> <Target Directory> [java | scala]', errorText)
     end
 
 module_function :helpDataMetaJacksonSerGen, :genJacksonables, :genJacksonable, :getRwRenderer,

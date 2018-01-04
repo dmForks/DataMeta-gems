@@ -18,7 +18,7 @@ Generates (de)serializers to/from JSON using FasterXML Jackson.
 
 ## SYNOPSIS:
 
-To generate Byte Array serializers in Java, including Hadoop Writables for the DataMeta model, run:
+To generate the JSON (de)serializers in Java, including Hadoop Writables for the DataMeta model, run:
 
     dataMetaJacksonSerGen.rb <DataMeta DOM source> <Target Directory>
 
