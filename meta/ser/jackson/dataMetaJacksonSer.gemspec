@@ -12,8 +12,7 @@ Gem::Specification.new do |s|
 
   allFiles = []
   allFiles << Dir.glob('lib/**/*')
-# There are no templates in this project yet, but we may create them later, like for a migration switch.
-#  allFiles << Dir.glob('tmpl/**/*')
+  allFiles << Dir.glob('tmpl/**/*')
   allFiles << Dir.glob('bin/**/*').select{|n| case File.basename(n) when 'deploy.rb', 'reinstall.rb' then false else true end}
   allFiles << Dir.glob('test/**/*') # include all tests
   allFiles << 'README.md' << 'Rakefile' << 'PostInstall.txt' << '.yardopts' << 'History.md'
