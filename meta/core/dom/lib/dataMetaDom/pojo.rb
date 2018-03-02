@@ -905,7 +905,7 @@ Generates migration guides from the given model to the given model
         v2 = mo2.records.values.first.ver.full
         destDir = outRoot
         javaPackage = '' # set the scope for the var
-        vars =  OpenStruct.new # for template's local variables. ERB does not make them visible to the binding
+        vars = OpenStruct.new # for template's local variables. ERB does not make them visible to the binding
         if false # Ruby prints the warning that the var is unused, unable to figure out that it is used in the ERB file
             # and adding insult to injury, the developers didn't think of squelching the false warnings
             p vars
