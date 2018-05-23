@@ -1,5 +1,9 @@
 # `dataMetaJacksonSer` Release history:
 
+## `2.0.2` released `2018-05-13 Sun` by [`mub`](https://github.com/mub)
+* 1 update:
+    * Support for Enum serialization
+    
 ## `2.0.1` released `2017-04-18 Tue` by [`mub`](https://github.com/mub)
 * 1 update:
     * Added Java output format for Jsonables.

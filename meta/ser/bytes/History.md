@@ -1,5 +1,9 @@
 # `dataMetaByteSer` Release history:
 
+## `1.0.6` - `2018-05-13 Sun` by [`mub`](http://github.com/mub)
+* Update:
+    * Support for Enum serialization
+    
 ## `1.0.5` - `2017-05-27 Sat` by [`mub`](http://github.com/mub)
 * Update:
     * Altered the Read Switch generator code to keep existing files.

@@ -14,23 +14,23 @@ For command line details either check the new method's source or the README.rdoc
 =end
 module DataMetaJacksonSer
     # Current version
-    VERSION = '2.0.1'
+    VERSION = '2.0.2'
     include DataMetaDom, DataMetaDom::PojoLexer
 
 =begin rdoc
-HDFS Reader and Writer for textual Java types such as String.
+JSON Reader and Writer for textual Java types such as String.
 =end
     TEXT_RW_METHODS = RwHolder.new(
             lambda{|ctx|
-                ctx.fld.aggr ? ctx.rw.call("read#{aggrBaseName(aggrJavaFull(ctx.fld.aggr))}String(in)") : ctx.rw.call('JU.readText(in)')
+                ctx.fld.aggr ? ctx.rw.call("JU.read#{aggrBaseName(aggrJavaFull(ctx.fld.aggr))}String(in)") : ctx.rw.call('JU.readText(in)')
             },
             lambda{|ctx|
-                 ctx.fld.aggr ? "write#{aggrBaseName(aggrJavaFull(ctx.fld.aggr))}String(\"#{ctx.fld.name}\", out, value.#{ctx.valGetter}#{ctx.|})" : "out.writeStringField(\"#{ctx.fld.name}\", value.#{ctx.valGetter}#{ctx.|})"
+                 ctx.fld.aggr ? ctx.rw.call("JU.write#{aggrBaseName(aggrJavaFull(ctx.fld.aggr))}String(\"#{ctx.fld.name}\", out, value.#{ctx.valGetter}#{ctx.|})") : "out.writeStringField(\"#{ctx.fld.name}\", value.#{ctx.valGetter}#{ctx.|})"
             }
     )
 
 =begin rdoc
-HDFS Reader and Writer for integral Java types such as Integer or Long.
+JSON Reader and Writer for integral Java types such as Integer or Long.
 =end
     INTEGRAL_RW_METHODS = RwHolder.new(
                 lambda{ |ctx|
@@ -59,7 +59,7 @@ HDFS Reader and Writer for integral Java types such as Integer or Long.
                 })
 
 =begin rdoc
-HDFS Reader and Writer for floating point Java types such as Float or Double.
+JSON Reader and Writer for floating point Java types such as Float or Double.
 =end
     FLOAT_RW_METHODS = RwHolder.new(
                 lambda{|ctx|
@@ -72,14 +72,14 @@ HDFS Reader and Writer for floating point Java types such as Float or Double.
                   },
                 lambda{|ctx|
                     case
-                      when ctx.fType.length <= 4; ctx.fld.aggr ? "JU.write#{aggrBaseName(aggrJavaFull(ctx.fld.aggr))}Float(out, value.#{ctx.valGetter}#{ctx.|})" : "out.writeNumberField(\"#{ctx.fld.name}\", value.#{ctx.valGetter}#{ctx.|})"
-                      when ctx.fType.length <= 8; ctx.fld.aggr ? "JU.write#{aggrBaseName(aggrJavaFull(ctx.fld.aggr))}Double(out, value.#{ctx.valGetter}#{ctx.|})" : "out.writeNumberField(\"#{ctx.fld.name}\", value.#{ctx.valGetter}#{ctx.|})"
+                      when ctx.fType.length <= 4; ctx.fld.aggr ? "JU.write#{aggrBaseName(aggrJavaFull(ctx.fld.aggr))}Float(\"#{ctx.fld.name}\", out, value.#{ctx.valGetter}#{ctx.|})" : "out.writeNumberField(\"#{ctx.fld.name}\", value.#{ctx.valGetter}#{ctx.|})"
+                      when ctx.fType.length <= 8; ctx.fld.aggr ? "JU.write#{aggrBaseName(aggrJavaFull(ctx.fld.aggr))}Double(\"#{ctx.fld.name}\", out, value.#{ctx.valGetter}#{ctx.|})" : "out.writeNumberField(\"#{ctx.fld.name}\", value.#{ctx.valGetter}#{ctx.|})"
                       else; raise "Invalid float field #{ctx.fld}"
                     end
               })
 
 =begin rdoc
-HDFS Reader and Writer for the temporal type, the DateTime
+JSON Reader and Writer for the temporal type, the DateTime
 =end
     DTTM_RW_METHODS = RwHolder.new(
             lambda { |ctx|
@@ -92,7 +92,7 @@ HDFS Reader and Writer for the temporal type, the DateTime
     )
 
 =begin rdoc
-HDFS Reader and Writer for boolean Java type.
+JSON Reader and Writer for boolean Java type.
 =end
     BOOL_RW_METHODS = RwHolder.new(
             lambda { |ctx|
@@ -106,7 +106,7 @@ HDFS Reader and Writer for boolean Java type.
     )
 
 =begin rdoc
-HDFS Reader and Writer the raw data type, the byte array.
+JSON Reader and Writer the raw data type, the byte array.
 =end
     RAW_RW_METHODS = RwHolder.new(
             lambda { |ctx|
@@ -119,27 +119,25 @@ HDFS Reader and Writer the raw data type, the byte array.
     )
 
 =begin rdoc
-HDFS Reader and Writer the variable size Decimal data type.
+JSON Reader and Writer the variable size Decimal data type.
 =end
     NUMERIC_RW_METHODS = RwHolder.new(lambda{|ctx| ctx.fld.aggr ? ctx.rw.call("JU.read#{aggrBaseName(aggrJavaFull(ctx.fld.aggr))}BigDecimal(in)") : ctx.rw.call('JU.readBigDecimal(in)')},
                                       lambda{|ctx| "out.writeNumberField(\"#{ctx.fld.name}\", value.#{ctx.valGetter}#{ctx.|})"})
 
 =begin rdoc
-HDFS Reader and Writer the Java Enums.
+JSON Reader and Writer the Java Enums.
 =end
     ENUM_RW_METHODS = RwHolder.new(
           lambda{|ctx|
-            aggrNotSupported(ctx.fld, 'Enums') if ctx.fld.aggr
-            "Enum.valueOf(#{DataMetaDom.condenseType(ctx.fType.type, ctx.pckg)}.class, JU.readText(in))"
+            ctx.fld.aggr ? "JU.read#{aggrBaseName(aggrJavaFull(ctx.fld.aggr))}Enum(in, #{ctx.fType.type}.class)" : "Enum.valueOf(#{DataMetaDom.condenseType(ctx.fType.type, ctx.pckg)}.class, JU.readText(in))"
           },
           lambda { |ctx|
-            aggrNotSupported(ctx.fld, 'Enums') if ctx.fld.aggr
-            "out.writeStringField(\"#{ctx.fld.name}\", value.#{ctx.valGetter}#{ctx.|}.name())"
+            ctx.fld.aggr ? %<JU.write#{aggrBaseName(aggrJavaFull(ctx.fld.aggr))}Enum("#{ctx.fld.name}", out, value.#{ctx.valGetter}#{ctx.|})> : "out.writeStringField(\"#{ctx.fld.name}\", value.#{ctx.valGetter}#{ctx.|}.name())"
           }
     )
 
 =begin rdoc
-HDFS Reader and Writer the BitSet.
+JSON Reader and Writer the BitSet.
 =end
     BITSET_RW_METHODS = RwHolder.new(
           lambda { |ctx|
@@ -153,7 +151,7 @@ HDFS Reader and Writer the BitSet.
     )
 
 =begin rdoc
-HDFS Reader and Writer the URL.
+JSON Reader and Writer the URL.
 =end
     URL_RW_METHODS = RwHolder.new(
             lambda { |ctx|
