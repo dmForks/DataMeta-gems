@@ -14,7 +14,7 @@ For command line details either check the new method's source or the README.rdoc
 =end
 module DataMetaByteSer
     # Current version
-    VERSION = '1.0.5'
+    VERSION = '1.0.6'
     include DataMetaDom, DataMetaDom::PojoLexer
 
 =begin rdoc
@@ -106,12 +106,11 @@ HDFS Reader and Writer the raw data type, the byte array.
 =end
     RAW_RW_METHODS = RwHolder.new(
             lambda { |ctx|
-                aggrNotSupported(ctx.fld, 'Raw Data') if ctx.fld.aggr
-                ctx.rw.call('readByteArray(in)')
+              ctx.fld.aggr ? ctx.rw.call("read#{aggrBaseName(aggrJavaFull(ctx.fld.aggr))}Enum(in, #{ctx.fld.dataType.type}.class)") : ctx.rw.call('readByteArray(in)')
             },
             lambda { |ctx|
                 aggrNotSupported(ctx.fld, 'Raw Data') if ctx.fld.aggr
-                "writeByteArray(out, val.#{ctx.valGetter})" }
+                ctx.fld.aggr ? "write#{aggrBaseName(aggrJavaFull(ctx.fld.aggr))}ZonedDateTime(out, val.#{ctx.valGetter})" : "writeByteArray(out, val.#{ctx.valGetter})" }
     )
 
 =begin rdoc
@@ -125,12 +124,10 @@ HDFS Reader and Writer the Java Enums.
 =end
     ENUM_RW_METHODS = RwHolder.new(
           lambda{|ctx|
-            aggrNotSupported(ctx.fld, 'Enums') if ctx.fld.aggr
-            "#{DataMetaDom.condenseType(ctx.fType.type, ctx.pckg)}.forOrd(readVInt(in))"
+            ctx.fld.aggr ? "read#{aggrBaseName(aggrJavaFull(ctx.fld.aggr))}Enum(in, #{ctx.fType.type}.class)" : "#{DataMetaDom.condenseType(ctx.fType.type, ctx.pckg)}.forOrd(readVInt(in))"
           },
           lambda { |ctx|
-            aggrNotSupported(ctx.fld, 'Enums') if ctx.fld.aggr
-            "writeVInt(out, val.#{ctx.valGetter}.ordinal())"
+            ctx.fld.aggr ? "write#{aggrBaseName(aggrJavaFull(ctx.fld.aggr))}Enum(out, val.#{ctx.valGetter})" : "writeVInt(out, val.#{ctx.valGetter}.ordinal())"
           }
     )
 
@@ -175,6 +172,7 @@ Read/write methods for the standard data types.
           NUMERIC => NUMERIC_RW_METHODS,
           URL => URL_RW_METHODS
     }
+
 # DataMeta DOM object renderer
     RECORD_RW_METHODS = RwHolder.new(
         lambda { |ctx|

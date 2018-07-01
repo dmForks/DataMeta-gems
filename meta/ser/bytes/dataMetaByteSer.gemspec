@@ -3,8 +3,8 @@ Gem::Specification.new do |s|
   s.name = 'dataMetaByteSer'
   s.has_rdoc = 'yard'
   s.version = DataMetaByteSer::VERSION
-  s.date = '2017-04-04'
-  s.summary = 'DataMeta Byte Array Serializers Gen'
+  s.date = '2018-05-13'
+  s.summary = 'DataMeta Byte Array Serializers Gem'
   s.description = 'Generates serializers of DataMeta objects to/from byte arrays, which can be used with Hadoop, BigTable and beyond.'
   s.authors = ['Michael Bergens']
   s.email = %q{michael.bergens@gmail.com}
