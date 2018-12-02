@@ -218,7 +218,7 @@ Creates an instance
 @param [String] user user permissions, can be passed as {Perm} object or String or Fixnum, see the method {PosixPerms.from} for details.
 @param [String] group group permissions, can be passed as {Perm} object or String or Fixnum, see the method {PosixPerms.from} for details.
 @param [String] world world permissions, can be passed as {Perm} object or String or Fixnum, see the method {PosixPerms.from} for details.
-@param [String] sticky flag, can be passed as {Perm} object or String or Fixnum, see the method {PosixPerms.from} for details.
+@param [String] sys system permissions, can be passed as {Perm} object or String or Fixnum, see the method {PosixPerms.from} for details.
 =end
             def initialize(user, group, world, sys = nil)
                 @u = PosixPerms.from(user, 'user')

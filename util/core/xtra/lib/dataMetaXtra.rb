@@ -6,7 +6,7 @@ require 'logger'
 #Various extensions to the Ruby SDK addressing whatever shortcomings we run into.
 module DataMetaXtra
     # Current version
-    VERSION = '1.0.0'
+    VERSION = '1.1.0'
 
     # Default Logger datetime format
     LOGGER_DTTM_FMT = '%Y-%m-%d %H:%M:%S'
