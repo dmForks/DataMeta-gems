@@ -4,7 +4,7 @@ Gem::Specification.new do |s|
   s.has_rdoc = 'yard'
   s.version = DataMetaXtra::VERSION
   puts "Version used: #{s.version}"
-  s.date = '2017-01-15'
+  s.date = '2018-11-14'
   s.summary = 'Small enhancements to a few Ruby standard classes.'
   s.description = 'A few small enhancements to some standard Ruby classes in one place convenient place.'
   s.authors = ['Michael Bergens']
